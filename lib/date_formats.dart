@@ -1,3 +1,1 @@
-class DateFormats {
-  static final String normalDateFormat = 'dd-MM-yyyy';
-}
+final String normalDateFormat = 'dd-MM-yyyy';
