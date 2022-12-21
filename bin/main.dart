@@ -52,8 +52,10 @@ Future<void> invokeGetAverageBalanceFromTransactionsCsv(
   int choice2;
   do {
     print('Average Daily Balance : $currentAverageDailyBalance');
-    print('1 : Forecast with same amount');
-    print('2 : Forecast with altered amount');
+    print('1 : Forecast within minimum balance on same balance');
+    print('2 : Forecast within minimum balance on altered balance');
+    print('3 : Forecast for 5 days with same balance');
+    print('4 : Forecast for 5 days with altered balance');
     print('0 : Exit');
     choice2 = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice2) {
@@ -61,56 +63,22 @@ Future<void> invokeGetAverageBalanceFromTransactionsCsv(
         print('Forecast');
         print('----------');
         print(
-            '${daily_balance_operations.prepareForecastForSameAmount(dailyBalances, minimumBalance, currentAverageDailyBalance)}');
+            '${daily_balance_operations.prepareForecastForSameBalance(dailyBalances, minimumBalance, currentAverageDailyBalance)}');
         break;
       case 2:
-        int choice3;
-        do {
-          print('1 : One Time Alteration - Immediate Withdraw');
-          print('2 : One Time Alteration - Immediate Deposit');
-          print('3 : One Time Alteration - Timed Withdraw');
-          print('4 : One Time Alteration - Timed Deposit');
-          print('0 : Exit');
-          choice3 = input_utils_cli.getValidIntCli('Enter you choice : ');
-          switch (choice3) {
-            case 1:
-              double amount =
-                  input_utils_cli.getValidDoubleCli('Enter amount : ');
-              print('Forecast');
-              print('----------');
-              print(
-                  '${daily_balance_operations.prepareForecastForOneTimeDifferentAmount(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotSameAmount: true)}');
-              break;
-            case 2:
-              // double amount =
-              //     input_utils_cli.getValidDoubleCli('Enter amount : ');
-              // print('Forecast');
-              // print('----------');
-              // print(
-              //     '${daily_balance_operations.prepareForecastForOneTimeDifferentAmount(dailyBalances, minimumBalance, currentAverageDailyBalance, amount, isNotSameAmount: true)}');
-              break;
-            case 3:
-              double amount =
-                  input_utils_cli.getValidDoubleCli('Enter amount : ');
-              print('Forecast');
-              print('----------');
-              print(
-                  '${daily_balance_operations.prepareForecastForOneTimeDifferentAmount(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
-              break;
-            case 4:
-              // double amount =
-              //     input_utils_cli.getValidDoubleCli('Enter amount : ');
-              // print('Forecast');
-              // print('----------');
-              // print(
-              //     '${daily_balance_operations.prepareForecastForOneTimeDifferentAmount(dailyBalances, minimumBalance, currentAverageDailyBalance, amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
-              break;
-            case 0:
-              break;
-            default:
-              print('Invalid Option, Try again...');
-          }
-        } while (choice3 != 0);
+        prepareForecastForAlteredBalance(
+            dailyBalances, minimumBalance, currentAverageDailyBalance);
+        break;
+      case 3:
+        print('Forecast');
+        print('----------');
+        print(
+            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 5)}');
+        break;
+      case 4:
+        prepareForecastForAlteredBalance(
+            dailyBalances, minimumBalance, currentAverageDailyBalance,
+            isForDays: true, forDays: 5);
         break;
       case 0:
         break;
@@ -118,4 +86,52 @@ Future<void> invokeGetAverageBalanceFromTransactionsCsv(
         print('Invalid Option, Try again...');
     }
   } while (choice2 != 0);
+}
+
+void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
+    double minimumBalance, double currentAverageDailyBalance,
+    {bool isForDays = false, int? forDays}) {
+  int choice3;
+  do {
+    print('1 : One Time Alteration - Immediate Withdraw');
+    print('2 : One Time Alteration - Immediate Deposit');
+    print('3 : One Time Alteration - Timed Withdraw');
+    print('4 : One Time Alteration - Timed Deposit');
+    print('0 : Exit');
+    choice3 = input_utils_cli.getValidIntCli('Enter you choice : ');
+    switch (choice3) {
+      case 1:
+        double amount = input_utils_cli.getValidDoubleCli('Enter amount : ');
+        print('Forecast');
+        print('----------');
+        if (isForDays) {
+          print(
+              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotSameAmount: true, isForDays: true, forDays: forDays)}');
+        } else {
+          print(
+              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotSameAmount: true)}');
+        }
+        break;
+      case 2:
+        break;
+      case 3:
+        double amount = input_utils_cli.getValidDoubleCli('Enter amount : ');
+        print('Forecast');
+        print('----------');
+        if (isForDays) {
+          print(
+              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last), isForDays: true, forDays: forDays)}');
+        } else {
+          print(
+              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
+        }
+        break;
+      case 4:
+        break;
+      case 0:
+        break;
+      default:
+        print('Invalid Option, Try again...');
+    }
+  } while (choice3 != 0);
 }
