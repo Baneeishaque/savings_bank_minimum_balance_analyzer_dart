@@ -19,6 +19,42 @@ double getValidDoubleCli(String prompt) {
   }
 }
 
+double getValidDoubleWithCustomInputsCli(
+    String prompt, Map<String, double> customInputs) {
+  print(prompt);
+  String? doubleInText = stdin.readLineSync();
+  if (doubleInText == null) {
+    return getValidDoubleWithCustomInputsCli(prompt, customInputs);
+  } else {
+    doubleInText = doubleInText.toUpperCase();
+    if (customInputs.containsKey(doubleInText)) {
+      return customInputs[doubleInText]!;
+    }
+    try {
+      return double.parse(doubleInText);
+    } on FormatException catch (exception) {
+      print('Exception : $exception');
+      return getValidDoubleCli(prompt);
+    }
+  }
+}
+
+String getValidStringWithCustomInputsCli(
+    String prompt, List<String> customInputs) {
+  print(prompt);
+  String? inputText = stdin.readLineSync();
+  if (inputText == null) {
+    return getValidStringWithCustomInputsCli(prompt, customInputs);
+  } else {
+    inputText = inputText.toUpperCase();
+    if (customInputs.contains(inputText)) {
+      return inputText;
+    } else {
+      return getValidStringWithCustomInputsCli(prompt, customInputs);
+    }
+  }
+}
+
 DateTime getValidDateCli(DateFormat dateFormat) {
   print('Enter the date in ${dateFormat.pattern} format :');
   String? dateInText = stdin.readLineSync();

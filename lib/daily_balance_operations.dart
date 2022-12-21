@@ -132,3 +132,51 @@ double getCurrentAverageDailyBalanceFromDailyBalanceMap(
   return _getCurrentAverageDailyBalance(
       sumOfDailyBalances, dailyBalances.length);
 }
+
+Map<DateTime, double> prepareForecastForOneTimeDifferentAmount(
+    Map<DateTime, double> dailyBalances,
+    double minimumBalance,
+    double currentAverageDailyBalance,
+    double lastBalance,
+    {bool isNotSameAmount = true,
+    bool isNotTimedOperation = true,
+    DateTime? eventDate}) {
+  bool isOneTimeNotOver = true;
+  Map<DateTime, double> forecastResult = {};
+  DateTime lastDay = dailyBalances.keys.last;
+  int noOfDays = dailyBalances.length;
+  double lastBalanceBackup = lastBalance;
+  while (currentAverageDailyBalance > minimumBalance) {
+    if (isOneTimeNotOver) {
+      if (isNotSameAmount && isNotTimedOperation) {
+        lastBalance = dailyBalances.values.last + lastBalance;
+        isOneTimeNotOver = false;
+      } else {
+        if (eventDate != null) {
+          if (eventDate.compareTo(lastDay.add(Duration(days: 1))) == 0) {
+            lastBalance = dailyBalances.values.last + lastBalanceBackup;
+            isOneTimeNotOver = false;
+          } else {
+            lastBalance = dailyBalances.values.last;
+          }
+        } else {
+          // throw exception
+        }
+      }
+    }
+    currentAverageDailyBalance =
+        ((currentAverageDailyBalance * noOfDays) + lastBalance) / (++noOfDays);
+    lastDay = lastDay.add(Duration(days: 1));
+    forecastResult[lastDay] = currentAverageDailyBalance;
+  }
+  return forecastResult;
+}
+
+Map<DateTime, double> prepareForecastForSameAmount(
+    Map<DateTime, double> dailyBalances,
+    double minimumBalance,
+    double currentAverageDailyBalance) {
+  return prepareForecastForOneTimeDifferentAmount(dailyBalances, minimumBalance,
+      currentAverageDailyBalance, dailyBalances.values.last,
+      isNotSameAmount: false);
+}
