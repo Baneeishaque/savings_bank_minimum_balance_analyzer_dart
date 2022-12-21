@@ -31,7 +31,7 @@ double _getCurrentAverageDailyBalanceFromDailyBalanceList(
       sumOfDailyBalances, dailyBalances.length);
 }
 
-Future<double> _getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
+Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
   return _getCurrentAverageDailyBalanceFromDailyBalanceList(
       await _readDailyBalancesFromCsv(csvPath));
 }

@@ -3,14 +3,7 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
-        <entry key="\lib\dailyBalances.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\lib\dailyBalances.csv_sample">
+        <entry key="\dailyBalances_kgb.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

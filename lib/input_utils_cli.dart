@@ -19,6 +19,21 @@ double getValidDoubleCli(String prompt) {
   }
 }
 
+int getValidIntCli(String prompt) {
+  print(prompt);
+  String? intInputText = stdin.readLineSync();
+  if (intInputText == null) {
+    return getValidIntCli(prompt);
+  } else {
+    try {
+      return int.parse(intInputText);
+    } on FormatException catch (exception) {
+      print('Exception : $exception');
+      return getValidIntCli(prompt);
+    }
+  }
+}
+
 double getValidDoubleWithCustomInputsCli(
     String prompt, Map<String, double> customInputs) {
   print(prompt);
