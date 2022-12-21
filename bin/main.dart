@@ -1,7 +1,7 @@
-import 'package:savings_bank_minimum_balance_resolver_common/daily_balnce_operations.dart'
-    as savings_bank_minimum_balance_resolver_common;
+import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_operations.dart'
+    as daily_balance_operations;
 
 void main(List<String> arguments) async {
   print(
-      'Current Average Daily Balance: ${await savings_bank_minimum_balance_resolver_common.getCurrentAverageDailyBalanceFromCsv('dailyBalances.csv')}');
+      'Daily Balances: ${await daily_balance_operations.calculateDailyBalancesFromTransactionsCsv('transactions.csv')}');
 }

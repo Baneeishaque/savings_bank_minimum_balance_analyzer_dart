@@ -1,1 +1,3 @@
-final String normalDateFormat = 'dd-MM-yyyy';
+import 'package:intl/intl.dart';
+
+final DateFormat normalDateFormat = DateFormat('dd-MM-yyyy');
