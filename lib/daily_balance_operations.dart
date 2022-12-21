@@ -1,23 +1,16 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:grizzly_io/io_loader.dart';
-import 'package:intl/intl.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/transaction.dart';
 
+import 'input_utils.dart';
+
 double _getCurrentAverageDailyBalance(
     double sumOfDailyBalances, int numberOfDays) {
   return sumOfDailyBalances / numberOfDays;
-}
-
-double _getCurrentAverageDailyBalanceFromDailyBalanceList(List<DailyBalance> dailyBalances) {
-  double sumOfDailyBalances = 0;
-  for (DailyBalance dailyBalance in dailyBalances) {
-    sumOfDailyBalances += dailyBalance.balance;
-  }
-  return _getCurrentAverageDailyBalance(
-      sumOfDailyBalances, dailyBalances.length);
 }
 
 Future<List<DailyBalance>> _readDailyBalancesFromCsv(String csvPath) async {
@@ -30,7 +23,17 @@ Future<List<DailyBalance>> _readDailyBalancesFromCsv(String csvPath) async {
   return dailyBalances;
 }
 
-Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
+double _getCurrentAverageDailyBalanceFromDailyBalanceList(
+    List<DailyBalance> dailyBalances) {
+  double sumOfDailyBalances = 0;
+  for (DailyBalance dailyBalance in dailyBalances) {
+    sumOfDailyBalances += dailyBalance.balance;
+  }
+  return _getCurrentAverageDailyBalance(
+      sumOfDailyBalances, dailyBalances.length);
+}
+
+Future<double> _getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
   return _getCurrentAverageDailyBalanceFromDailyBalanceList(
       await _readDailyBalancesFromCsv(csvPath));
 }
@@ -45,7 +48,7 @@ Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
   return transactions;
 }
 
-Future<List<DailyBalance>> calculateDailyBalancesFromTransactionsCsv(
+Future<Map<DateTime, double>> _calculateDailyBalancesFromTransactionsCsv(
     String csvPath) async {
   List<Transaction> transactions = await _readTransactionsFromCsv(csvPath);
   Map<DateTime, double> transactionSums = {};
@@ -68,66 +71,65 @@ Future<List<DailyBalance>> calculateDailyBalancesFromTransactionsCsv(
   DateTime upToDate = transactionSums.keys.first;
   print(
       'Calculate Daily Balance up-to $upToDate (Y/N - Just Enter for Yes) : ');
-  String? input = stdin.readLineSync();
-  if (input != "") {
+  String? upToDateInput = stdin.readLineSync();
+  if (upToDateInput != "") {
     upToDate = getValidNormalGreaterDate(upToDate);
   }
+
   double lastBalance = getValidDouble('Enter the last balance on $upToDate : ');
-  List<DailyBalance> dailyBalances = List.empty(growable: true);
+  SplayTreeMap<DateTime, double> dailyBalances =
+      SplayTreeMap((k1, k2) => k1.compareTo(k2));
   while (upToDate != transactionSums.keys.first) {
-    dailyBalances.add(DailyBalance(date: upToDate, balance: lastBalance));
+    dailyBalances[upToDate] = lastBalance;
     upToDate = upToDate.subtract(Duration(days: 1));
   }
+
   transactionSums.forEach((key, value) {
-    dailyBalances.add(DailyBalance(date: key, balance: lastBalance));
+    dailyBalances[key] = lastBalance;
     lastBalance += value;
   });
+
+  DateTime fromDate = dailyBalances.keys.first;
+  print('Calculate Daily Balance from $fromDate (Y/N - Just Enter for Yes) : ');
+  String? fromDateInput = stdin.readLineSync();
+  DateTime? secondFromDate;
+  double lowerBalance = 0;
+  if (fromDateInput != "") {
+    secondFromDate = getValidNormalLowerDate(fromDate);
+    lowerBalance = dailyBalances.values.first;
+  }
+
+  while ((secondFromDate != null) && (fromDate != secondFromDate)) {
+    fromDate = fromDate.subtract(Duration(days: 1));
+    dailyBalances[fromDate] = lowerBalance;
+  }
+
+  DateTime lowerDate = dailyBalances.keys.first;
+  double dayBalance = 0;
+  while (lowerDate != dailyBalances.keys.last) {
+    if (dailyBalances.containsKey(lowerDate)) {
+      dayBalance = dailyBalances[lowerDate]!;
+    } else {
+      dailyBalances[lowerDate] = dayBalance;
+    }
+    lowerDate = lowerDate.add(Duration(days: 1));
+  }
+
   return dailyBalances;
 }
 
-DateTime getValidDate(DateFormat dateFormat) {
-  print('Enter the date in ${dateFormat.pattern} format :');
-  String? dateInText = stdin.readLineSync();
-  if (dateInText == null) {
-    return getValidDate(dateFormat);
-  } else {
-    try {
-      return dateFormat.parse(dateInText);
-    } on FormatException catch (exception) {
-      print('Exception : $exception');
-      return getValidDate(dateFormat);
-    }
-  }
+double _getCurrentAverageDailyBalanceFromDailyBalanceMap(
+    Map<DateTime, double> dailyBalances) {
+  double sumOfDailyBalances = 0;
+  dailyBalances.forEach((key, value) {
+    sumOfDailyBalances += value;
+  });
+  return _getCurrentAverageDailyBalance(
+      sumOfDailyBalances, dailyBalances.length);
 }
 
-double getValidDouble(String prompt) {
-  print(prompt);
-  String? doubleInText = stdin.readLineSync();
-  if (doubleInText == null) {
-    return getValidDouble(prompt);
-  } else {
-    try {
-      return double.parse(doubleInText);
-    } on FormatException catch (exception) {
-      print('Exception : $exception');
-      return getValidDouble(prompt);
-    }
-  }
-}
-
-DateTime getValidGreaterDate(DateTime otherDate, DateFormat dateFormat) {
-  DateTime date = getValidDate(dateFormat);
-  if (date.compareTo(otherDate) > 0) {
-    return date;
-  } else {
-    return getValidGreaterDate(otherDate, dateFormat);
-  }
-}
-
-DateTime getValidNormalDate() {
-  return getValidDate(normalDateFormat);
-}
-
-DateTime getValidNormalGreaterDate(DateTime otherDate) {
-  return getValidGreaterDate(otherDate, normalDateFormat);
+Future<double> getCurrentAverageDailyBalanceFromTransactionsCsv(
+    String csvPath) async {
+  return _getCurrentAverageDailyBalanceFromDailyBalanceMap(
+      await _calculateDailyBalancesFromTransactionsCsv(csvPath));
 }

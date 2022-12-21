@@ -3,5 +3,5 @@ import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_opera
 
 void main(List<String> arguments) async {
   print(
-      'Daily Balances: ${await daily_balance_operations.calculateDailyBalancesFromTransactionsCsv('transactions.csv')}');
+      'Daily Balances: ${await daily_balance_operations.getCurrentAverageDailyBalanceFromTransactionsCsv('transactions.csv')}');
 }
