@@ -4,17 +4,17 @@ import 'package:intl/intl.dart';
 
 import 'date_formats.dart';
 
-double getValidDouble(String prompt) {
+double getValidDoubleCli(String prompt) {
   print(prompt);
   String? doubleInText = stdin.readLineSync();
   if (doubleInText == null) {
-    return getValidDouble(prompt);
+    return getValidDoubleCli(prompt);
   } else {
     try {
       return double.parse(doubleInText);
     } on FormatException catch (exception) {
       print('Exception : $exception');
-      return getValidDouble(prompt);
+      return getValidDoubleCli(prompt);
     }
   }
 }
@@ -56,10 +56,10 @@ DateTime getValidNormalDate() {
   return getValidDate(normalDateFormat);
 }
 
-DateTime getValidNormalGreaterDate(DateTime otherDate) {
+DateTime getValidNormalGreaterDateCli(DateTime otherDate) {
   return getValidGreaterDate(otherDate, normalDateFormat);
 }
 
-DateTime getValidNormalLowerDate(DateTime otherDate) {
+DateTime getValidNormalLowerDateCli(DateTime otherDate) {
   return getValidLowerDate(otherDate, normalDateFormat);
 }
