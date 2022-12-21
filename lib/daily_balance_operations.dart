@@ -1,12 +1,10 @@
 import 'dart:collection';
-import 'dart:io';
 
 import 'package:grizzly_io/io_loader.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
-import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart';
+import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
+    as date_formats;
 import 'package:savings_bank_minimum_balance_resolver_common/transaction.dart';
-
-import 'input_utils.dart';
 
 double _getCurrentAverageDailyBalance(
     double sumOfDailyBalances, int numberOfDays) {
@@ -17,7 +15,7 @@ Future<List<DailyBalance>> _readDailyBalancesFromCsv(String csvPath) async {
   List<DailyBalance> dailyBalances = List.empty(growable: true);
   for (List<String> row in (await readCsv(csvPath))) {
     dailyBalances.add(DailyBalance(
-        date: normalDateFormat.parseStrict(row[0]),
+        date: date_formats.normalDateFormat.parseStrict(row[0]),
         balance: double.parse(row[1])));
   }
   return dailyBalances;
@@ -42,13 +40,13 @@ Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
   List<Transaction> transactions = List.empty(growable: true);
   for (List<String> row in (await readCsv(csvPath))) {
     transactions.add(Transaction(
-        date: normalDateFormat.parseStrict(row[0]),
+        date: date_formats.normalDateFormat.parseStrict(row[0]),
         amount: double.parse(row[1])));
   }
   return transactions;
 }
 
-Future<Map<DateTime, double>> _calculateDailyBalancesFromTransactionsCsvCommon(
+Future<Map<DateTime, double>> calculateDailyBalancesFromTransactionsCsv(
     DateTime upToDate,
     double lastBalance,
     DateTime fromDate,
@@ -57,15 +55,6 @@ Future<Map<DateTime, double>> _calculateDailyBalancesFromTransactionsCsvCommon(
       fromDate,
       _fillDailyBalancesUpToAvailableDate(
           upToDate, transactionSums, lastBalance)));
-}
-
-Future<Map<DateTime, double>> _calculateDailyBalancesFromTransactionsCsvCli(
-    Map<DateTime, double> transactionSums) async {
-  DateTime upToDate = _getUpToDateCli(transactionSums.keys.first);
-  double lastBalance =
-      getValidDoubleCli('Enter the last balance on $upToDate : ');
-  return _calculateDailyBalancesFromTransactionsCsvCommon(upToDate, lastBalance,
-      _getFromDateCli(transactionSums.keys.last), transactionSums);
 }
 
 SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
@@ -96,15 +85,6 @@ SplayTreeMap<DateTime, double> _fillDailyBalancesFromDate(
   return dailyBalances;
 }
 
-DateTime _getFromDateCli(DateTime fromDate) {
-  print('Calculate Daily Balance from $fromDate (Y/N - Just Enter for Yes) : ');
-  String? fromDateInput = stdin.readLineSync();
-  if (fromDateInput != "") {
-    fromDate = getValidNormalLowerDateCli(fromDate);
-  }
-  return fromDate;
-}
-
 SplayTreeMap<DateTime, double> _fillDailyBalancesUpToAvailableDate(
     DateTime upToDate,
     Map<DateTime, double> transactionSums,
@@ -122,17 +102,7 @@ SplayTreeMap<DateTime, double> _fillDailyBalancesUpToAvailableDate(
   return dailyBalances;
 }
 
-DateTime _getUpToDateCli(DateTime upToDate) {
-  print(
-      'Calculate Daily Balance up-to $upToDate (Y/N - Just Enter for Yes) : ');
-  String? upToDateInput = stdin.readLineSync();
-  if (upToDateInput != "") {
-    upToDate = getValidNormalGreaterDateCli(upToDate);
-  }
-  return upToDate;
-}
-
-Future<Map<DateTime, double>> _prepareTransactionSums(String csvPath) async {
+Future<Map<DateTime, double>> prepareTransactionSums(String csvPath) async {
   List<Transaction> transactions = await _readTransactionsFromCsv(csvPath);
   Map<DateTime, double> transactionSums = {};
   DateTime? currentDateOfTransaction;
@@ -153,7 +123,7 @@ Future<Map<DateTime, double>> _prepareTransactionSums(String csvPath) async {
   return transactionSums;
 }
 
-double _getCurrentAverageDailyBalanceFromDailyBalanceMap(
+double getCurrentAverageDailyBalanceFromDailyBalanceMap(
     Map<DateTime, double> dailyBalances) {
   double sumOfDailyBalances = 0;
   dailyBalances.forEach((key, value) {
@@ -161,11 +131,4 @@ double _getCurrentAverageDailyBalanceFromDailyBalanceMap(
   });
   return _getCurrentAverageDailyBalance(
       sumOfDailyBalances, dailyBalances.length);
-}
-
-Future<double> getCurrentAverageDailyBalanceFromTransactionsCsvCli(
-    String csvPath) async {
-  return _getCurrentAverageDailyBalanceFromDailyBalanceMap(
-      await _calculateDailyBalancesFromTransactionsCsvCli(
-          await _prepareTransactionSums(csvPath)));
 }

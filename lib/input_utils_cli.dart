@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:intl/intl.dart';
 
-import 'date_formats.dart';
+import 'date_formats.dart' as date_formats;
 
 double getValidDoubleCli(String prompt) {
   print(prompt);
@@ -19,47 +19,47 @@ double getValidDoubleCli(String prompt) {
   }
 }
 
-DateTime getValidDate(DateFormat dateFormat) {
+DateTime getValidDateCli(DateFormat dateFormat) {
   print('Enter the date in ${dateFormat.pattern} format :');
   String? dateInText = stdin.readLineSync();
   if (dateInText == null) {
-    return getValidDate(dateFormat);
+    return getValidDateCli(dateFormat);
   } else {
     try {
       return dateFormat.parse(dateInText);
     } on FormatException catch (exception) {
       print('Exception : $exception');
-      return getValidDate(dateFormat);
+      return getValidDateCli(dateFormat);
     }
   }
 }
 
-DateTime getValidGreaterDate(DateTime otherDate, DateFormat dateFormat) {
-  DateTime date = getValidDate(dateFormat);
+DateTime getValidGreaterDateCli(DateTime otherDate, DateFormat dateFormat) {
+  DateTime date = getValidDateCli(dateFormat);
   if (date.compareTo(otherDate) > 0) {
     return date;
   } else {
-    return getValidGreaterDate(otherDate, dateFormat);
+    return getValidGreaterDateCli(otherDate, dateFormat);
   }
 }
 
-DateTime getValidLowerDate(DateTime otherDate, DateFormat dateFormat) {
-  DateTime date = getValidDate(dateFormat);
+DateTime getValidLowerDateCli(DateTime otherDate, DateFormat dateFormat) {
+  DateTime date = getValidDateCli(dateFormat);
   if (date.compareTo(otherDate) < 0) {
     return date;
   } else {
-    return getValidLowerDate(otherDate, dateFormat);
+    return getValidLowerDateCli(otherDate, dateFormat);
   }
 }
 
-DateTime getValidNormalDate() {
-  return getValidDate(normalDateFormat);
+DateTime getValidNormalDateCli() {
+  return getValidDateCli(date_formats.normalDateFormat);
 }
 
 DateTime getValidNormalGreaterDateCli(DateTime otherDate) {
-  return getValidGreaterDate(otherDate, normalDateFormat);
+  return getValidGreaterDateCli(otherDate, date_formats.normalDateFormat);
 }
 
 DateTime getValidNormalLowerDateCli(DateTime otherDate) {
-  return getValidLowerDate(otherDate, normalDateFormat);
+  return getValidLowerDateCli(otherDate, date_formats.normalDateFormat);
 }
