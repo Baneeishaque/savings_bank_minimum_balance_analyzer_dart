@@ -1,5 +1,6 @@
 import 'dart:collection';
 
+import 'package:dartx/dartx.dart';
 import 'package:grizzly_io/io_loader.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
@@ -133,19 +134,20 @@ double getCurrentAverageDailyBalanceFromDailyBalanceMap(
       sumOfDailyBalances, dailyBalances.length);
 }
 
-Map<DateTime, double> prepareForecastForOneTimeAlteredBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance,
-    double lastBalance,
-    {bool isNotSameAmount = true,
-    bool isNotTimedOperation = true,
-    DateTime? eventDate,
-    bool isForDays = false,
-    int? forDays}) {
+Map<DateTime, Pair<double, double>>
+    prepareForecastWithSolutionForOneTimeAlteredBalance(
+        Map<DateTime, double> dailyBalances,
+        double minimumBalance,
+        double currentAverageDailyBalance,
+        double lastBalance,
+        {bool isNotSameAmount = true,
+        bool isNotTimedOperation = true,
+        DateTime? eventDate,
+        bool isForDays = false,
+        int? forDays}) {
   bool isOneTimeNotOver = true;
 
-  Map<DateTime, double> forecastResult = {};
+  Map<DateTime, Pair<double, double>> forecastResult = {};
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -156,13 +158,15 @@ Map<DateTime, double> prepareForecastForOneTimeAlteredBalance(
 
   while (checkLoopCriteria(currentAverageDailyBalance, minimumBalance,
       isForDays, forDays, dayCounter)) {
+    lastDay = lastDay.add(Duration(days: 1));
+
     if (isOneTimeNotOver) {
       if (isNotSameAmount && isNotTimedOperation) {
         lastBalance = dailyBalances.values.last + lastBalance;
         isOneTimeNotOver = false;
       } else {
         if (eventDate != null) {
-          if (eventDate.compareTo(lastDay.add(Duration(days: 1))) == 0) {
+          if (eventDate.compareTo(lastDay) == 0) {
             lastBalance = dailyBalances.values.last + lastBalanceBackup;
             isOneTimeNotOver = false;
           } else {
@@ -173,10 +177,21 @@ Map<DateTime, double> prepareForecastForOneTimeAlteredBalance(
         }
       }
     }
+
+    double sumOfDailyBalancesForExtraOneDay =
+        (currentAverageDailyBalance * noOfDays) + lastBalance;
     currentAverageDailyBalance =
-        ((currentAverageDailyBalance * noOfDays) + lastBalance) / (++noOfDays);
-    lastDay = lastDay.add(Duration(days: 1));
-    forecastResult[lastDay] = currentAverageDailyBalance;
+        sumOfDailyBalancesForExtraOneDay / (++noOfDays);
+
+    double solutionAmount;
+    if (currentAverageDailyBalance > minimumBalance) {
+      solutionAmount = 0;
+    } else {
+      solutionAmount =
+          (minimumBalance * noOfDays) - sumOfDailyBalancesForExtraOneDay;
+    }
+
+    forecastResult[lastDay] = Pair(currentAverageDailyBalance, solutionAmount);
     dayCounter++;
   }
   return forecastResult;
@@ -196,21 +211,21 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-Map<DateTime, double> prepareForecastForSameBalance(
+Map<DateTime, Pair<double, double>> prepareForecastForSameBalance(
     Map<DateTime, double> dailyBalances,
     double minimumBalance,
     double currentAverageDailyBalance) {
-  return prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance,
-      currentAverageDailyBalance, dailyBalances.values.last,
+  return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
+      minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false);
 }
 
-Map<DateTime, double> prepareForecastForDaysWithSameBalance(
+Map<DateTime, Pair<double, double>> prepareForecastForDaysWithSameBalance(
     Map<DateTime, double> dailyBalances,
     double minimumBalance,
     double currentAverageDailyBalance,
     int forDays) {
-  return prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance,
-      currentAverageDailyBalance, dailyBalances.values.last,
+  return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
+      minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false, isForDays: true, forDays: forDays);
 }

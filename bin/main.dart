@@ -106,10 +106,10 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
         print('----------');
         if (isForDays) {
           print(
-              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotSameAmount: true, isForDays: true, forDays: forDays)}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isForDays: true, forDays: forDays)}');
         } else {
           print(
-              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotSameAmount: true)}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount)}');
         }
         break;
       case 2:
@@ -120,10 +120,10 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
         print('----------');
         if (isForDays) {
           print(
-              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last), isForDays: true, forDays: forDays)}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last), isForDays: true, forDays: forDays)}');
         } else {
           print(
-              '${daily_balance_operations.prepareForecastForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
         }
         break;
       case 4:
