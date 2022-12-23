@@ -14,6 +14,7 @@ void main(List<String> arguments) async {
     print('2 : Calculate Average Balance from Transactions CSV : KGB');
     print('3 : Calculate Average Balance from Daily Balances CSV : PNB');
     print('4 : Calculate Average Balance from Transactions CSV : PNB');
+    print('5 : Calculate Average Balance from Transactions JSON : KGB');
     print('0 : Exit');
     choice = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice) {
@@ -33,6 +34,10 @@ void main(List<String> arguments) async {
         // await invokeGetAverageBalanceFromTransactionsCsv(
         //     'transactions_pnb.csv', constants.pnbMinimumBalance);
         break;
+      case 5:
+        invokeGetAverageBalanceFromTransactionsJson(
+            'transactions_kgb.json', constants.kgbMinimumBalance);
+        break;
       case 0:
         break;
       default:
@@ -43,12 +48,27 @@ void main(List<String> arguments) async {
 
 Future<void> invokeGetAverageBalanceFromTransactionsCsv(
     String transactionCsv, double minimumBalance) async {
-  Map<DateTime, double> dailyBalances = await daily_balance_operations_cli
-      .calculateDailyBalancesFromTransactionsCsvCli(
+  invokeForecast(
+      daily_balance_operations_cli.calculateDailyBalancesFromTransactionSumsCli(
           await daily_balance_operations
-              .prepareTransactionSums(transactionCsv));
+              .prepareTransactionSumsFromCsv(transactionCsv)),
+      minimumBalance);
+}
+
+void invokeGetAverageBalanceFromTransactionsJson(
+    String transactionCsv, double minimumBalance) {
+  invokeForecast(
+      daily_balance_operations_cli.calculateDailyBalancesFromTransactionSumsCli(
+          daily_balance_operations
+              .prepareTransactionSumsFromJson(transactionCsv)),
+      minimumBalance);
+}
+
+void invokeForecast(
+    Map<DateTime, double> dailyBalances, double minimumBalance) {
   double currentAverageDailyBalance = daily_balance_operations
       .getCurrentAverageDailyBalanceFromDailyBalanceMap(dailyBalances);
+
   int choice2;
   do {
     print('Average Daily Balance : $currentAverageDailyBalance');

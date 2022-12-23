@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:io';
 
 import 'package:dartx/dartx.dart';
 import 'package:grizzly_io/io_loader.dart';
@@ -6,6 +7,8 @@ import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart'
 import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
     as date_formats;
 import 'package:savings_bank_minimum_balance_resolver_common/transaction.dart';
+import 'package:savings_bank_minimum_balance_resolver_common/transactions_parser.dart'
+    as transactions_parser;
 
 double _getCurrentAverageDailyBalance(
     double sumOfDailyBalances, int numberOfDays) {
@@ -47,11 +50,29 @@ Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
   return transactions;
 }
 
-Future<Map<DateTime, double>> calculateDailyBalancesFromTransactionsCsv(
+List<Transaction> _readTransactionsFromJson(String jsonPath) {
+  Map<String, List<transactions_parser.TransactionAmountJson>>
+      parsedTransactions = transactions_parser
+          .transactionsFromJson(File(jsonPath).readAsStringSync());
+  List<Transaction> transactions = List.empty(growable: true);
+  parsedTransactions.forEach((String parsedTransactionDate,
+      List<transactions_parser.TransactionAmountJson>
+          parsedTransactionAmounts) {
+    for (transactions_parser.TransactionAmountJson parsedTransactionAmount
+        in parsedTransactionAmounts) {
+      transactions.add(Transaction(
+          date: date_formats.normalDateFormat.parse(parsedTransactionDate),
+          amount: parsedTransactionAmount.amount.toDouble()));
+    }
+  });
+  return transactions;
+}
+
+SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactionsCsv(
     DateTime upToDate,
     double lastBalance,
     DateTime fromDate,
-    Map<DateTime, double> transactionSums) async {
+    Map<DateTime, double> transactionSums) {
   return _fillMissingDailyBalances(_fillDailyBalancesFromDate(
       fromDate,
       _fillDailyBalancesUpToAvailableDate(
@@ -103,8 +124,16 @@ SplayTreeMap<DateTime, double> _fillDailyBalancesUpToAvailableDate(
   return dailyBalances;
 }
 
-Future<Map<DateTime, double>> prepareTransactionSums(String csvPath) async {
-  List<Transaction> transactions = await _readTransactionsFromCsv(csvPath);
+Future<Map<DateTime, double>> prepareTransactionSumsFromCsv(
+    String csvPath) async {
+  return _prepareTransactionSums(await _readTransactionsFromCsv(csvPath));
+}
+
+Map<DateTime, double> prepareTransactionSumsFromJson(String jsonPath) {
+  return _prepareTransactionSums(_readTransactionsFromJson(jsonPath));
+}
+
+Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {
   Map<DateTime, double> transactionSums = {};
   DateTime? currentDateOfTransaction;
   double currentDayTransactionBalance = 0;

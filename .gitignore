@@ -151,3 +151,4 @@ fabric.properties
 
 dailyBalances_kgb.csv
 transactions_kgb.csv
+transactions_kgb.json

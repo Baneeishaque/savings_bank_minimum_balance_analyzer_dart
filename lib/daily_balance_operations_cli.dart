@@ -1,12 +1,13 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_operations.dart'
-    as daily_balance_operations;
+as daily_balance_operations;
 import 'package:savings_bank_minimum_balance_resolver_common/input_utils_cli.dart'
-    as input_utils_cli;
+as input_utils_cli;
 
-Future<Map<DateTime, double>> calculateDailyBalancesFromTransactionsCsvCli(
-    Map<DateTime, double> transactionSums) async {
+SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactionSumsCli(
+    Map<DateTime, double> transactionSums) {
   DateTime upToDate = _getUpToDateCli(transactionSums.keys.first);
   double lastBalance = input_utils_cli
       .getValidDoubleCli('Enter the last balance on $upToDate : ');
@@ -36,10 +37,10 @@ DateTime _getFromDateCli(DateTime fromDate) {
   return fromDate;
 }
 
-Future<double> getCurrentAverageDailyBalanceFromTransactionsCsvCli(
-    String csvPath) async {
+Future<double> getCurrentAverageDailyBalanceFromTransactionsCsvCli(String csvPath) async {
   return daily_balance_operations
       .getCurrentAverageDailyBalanceFromDailyBalanceMap(
-      await calculateDailyBalancesFromTransactionsCsvCli(
-              await daily_balance_operations.prepareTransactionSums(csvPath)));
+          calculateDailyBalancesFromTransactionSumsCli(
+              await daily_balance_operations
+                  .prepareTransactionSumsFromCsv(csvPath)));
 }
