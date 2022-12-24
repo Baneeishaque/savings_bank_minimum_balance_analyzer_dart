@@ -56,11 +56,11 @@ Future<void> invokeGetAverageBalanceFromTransactionsCsv(
 }
 
 void invokeGetAverageBalanceFromTransactionsJson(
-    String transactionCsv, double minimumBalance) {
+    String transactionJson, double minimumBalance) {
   invokeForecast(
       daily_balance_operations_cli.calculateDailyBalancesFromTransactionSumsCli(
           daily_balance_operations
-              .prepareTransactionSumsFromJson(transactionCsv)),
+              .prepareTransactionSumsFromJson(transactionJson)),
       minimumBalance);
 }
 
