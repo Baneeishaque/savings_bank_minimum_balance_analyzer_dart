@@ -9,6 +9,8 @@ import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
 import 'package:savings_bank_minimum_balance_resolver_common/transaction.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/transactions_parser.dart'
     as transactions_parser;
+import 'package:savings_bank_minimum_balance_resolver_common/transactions_with_last_balance.dart'
+    as transactions_with_last_balance_parser;
 
 double _getCurrentAverageDailyBalance(
     double sumOfDailyBalances, int numberOfDays) {
@@ -68,7 +70,25 @@ List<Transaction> _readTransactionsFromJson(String jsonPath) {
   return transactions;
 }
 
-SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactionsCsv(
+Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
+    _readTransactionsWithLastBalanceFromJson(String jsonPath) {
+  transactions_with_last_balance_parser.TransactionsWithLastBalance
+      parsedTransactions =
+      transactions_with_last_balance_parser.transactionsWithLastBalanceFromJson(
+          File(jsonPath).readAsStringSync());
+  List<Transaction> transactions = List.empty(growable: true);
+  parsedTransactions.transactions.forEach(
+      (String parsedTransactionDate, List<num> parsedTransactionAmounts) {
+    for (num parsedTransactionAmount in parsedTransactionAmounts) {
+      transactions.add(Transaction(
+          date: date_formats.normalDateFormat.parse(parsedTransactionDate),
+          amount: parsedTransactionAmount.toDouble()));
+    }
+  });
+  return Pair(parsedTransactions.lastBalance, transactions);
+}
+
+SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactions(
     DateTime upToDate,
     double lastBalance,
     DateTime fromDate,
@@ -131,6 +151,15 @@ Future<Map<DateTime, double>> prepareTransactionSumsFromCsv(
 
 Map<DateTime, double> prepareTransactionSumsFromJson(String jsonPath) {
   return _prepareTransactionSums(_readTransactionsFromJson(jsonPath));
+}
+
+Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
+    prepareTransactionSumsWithLastBalanceFromJson(String jsonPath) {
+  Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
+      transactionsWithLastBalance =
+      _readTransactionsWithLastBalanceFromJson(jsonPath);
+  return Pair(transactionsWithLastBalance.first,
+      _prepareTransactionSums(transactionsWithLastBalance.second));
 }
 
 Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {

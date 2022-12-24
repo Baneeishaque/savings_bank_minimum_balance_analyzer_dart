@@ -15,6 +15,8 @@ void main(List<String> arguments) async {
     print('3 : Calculate Average Balance from Daily Balances CSV : PNB');
     print('4 : Calculate Average Balance from Transactions CSV : PNB');
     print('5 : Calculate Average Balance from Transactions JSON : KGB');
+    print(
+        '6 : Calculate Average Balance from Transactions with Last Balance JSON : KGB');
     print('0 : Exit');
     choice = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice) {
@@ -37,6 +39,15 @@ void main(List<String> arguments) async {
       case 5:
         invokeGetAverageBalanceFromTransactionsJson(
             'transactions_kgb.json', constants.kgbMinimumBalance);
+        break;
+      case 6:
+        invokeForecast(
+            daily_balance_operations_cli
+                .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
+                    daily_balance_operations
+                        .prepareTransactionSumsWithLastBalanceFromJson(
+                            'transactions_with_last_balance_kgb.json')),
+            constants.kgbMinimumBalance);
         break;
       case 0:
         break;
