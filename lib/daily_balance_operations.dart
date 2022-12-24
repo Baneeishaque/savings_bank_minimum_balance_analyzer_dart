@@ -1,7 +1,6 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:dartx/dartx.dart';
 import 'package:grizzly_io/io_loader.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
@@ -11,6 +10,7 @@ import 'package:savings_bank_minimum_balance_resolver_common/transactions_parser
     as transactions_parser;
 import 'package:savings_bank_minimum_balance_resolver_common/transactions_with_last_balance.dart'
     as transactions_with_last_balance_parser;
+import 'package:sugar/collection.dart';
 
 double _getCurrentAverageDailyBalance(
     double sumOfDailyBalances, int numberOfDays) {
@@ -158,8 +158,8 @@ Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
   Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
       transactionsWithLastBalance =
       _readTransactionsWithLastBalanceFromJson(jsonPath);
-  return Pair(transactionsWithLastBalance.first,
-      _prepareTransactionSums(transactionsWithLastBalance.second));
+  return Pair(transactionsWithLastBalance.key,
+      _prepareTransactionSums(transactionsWithLastBalance.value));
 }
 
 Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {
@@ -182,17 +182,18 @@ Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {
   return transactionSums;
 }
 
-double getCurrentAverageDailyBalanceFromDailyBalanceMap(
+Pair<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
     Map<DateTime, double> dailyBalances) {
   double sumOfDailyBalances = 0;
-  dailyBalances.forEach((key, value) {
-    sumOfDailyBalances += value;
+  dailyBalances.forEach((DateTime date, double dailyBalance) {
+    sumOfDailyBalances += dailyBalance;
   });
-  return _getCurrentAverageDailyBalance(
-      sumOfDailyBalances, dailyBalances.length);
+  return Pair(
+      _getCurrentAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
+      sumOfDailyBalances);
 }
 
-Map<DateTime, Pair<double, double>>
+Map<DateTime, Triple<double, double, double>>
     prepareForecastWithSolutionForOneTimeAlteredBalance(
         Map<DateTime, double> dailyBalances,
         double minimumBalance,
@@ -205,7 +206,7 @@ Map<DateTime, Pair<double, double>>
         int? forDays}) {
   bool isOneTimeNotOver = true;
 
-  Map<DateTime, Pair<double, double>> forecastResult = {};
+  Map<DateTime, Triple<double, double, double>> forecastResult = {};
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -249,7 +250,8 @@ Map<DateTime, Pair<double, double>>
           (minimumBalance * noOfDays) - sumOfDailyBalancesForExtraOneDay;
     }
 
-    forecastResult[lastDay] = Pair(currentAverageDailyBalance, solutionAmount);
+    forecastResult[lastDay] = Triple(currentAverageDailyBalance, solutionAmount,
+        sumOfDailyBalancesForExtraOneDay);
     dayCounter++;
   }
   return forecastResult;
@@ -269,7 +271,7 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-Map<DateTime, Pair<double, double>> prepareForecastForSameBalance(
+Map<DateTime, Triple<double, double, double>> prepareForecastForSameBalance(
     Map<DateTime, double> dailyBalances,
     double minimumBalance,
     double currentAverageDailyBalance) {
@@ -278,11 +280,9 @@ Map<DateTime, Pair<double, double>> prepareForecastForSameBalance(
       isNotSameAmount: false);
 }
 
-Map<DateTime, Pair<double, double>> prepareForecastForDaysWithSameBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance,
-    int forDays) {
+Map<DateTime, Triple<double, double, double>>
+    prepareForecastForDaysWithSameBalance(Map<DateTime, double> dailyBalances,
+        double minimumBalance, double currentAverageDailyBalance, int forDays) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false, isForDays: true, forDays: forDays);
