@@ -33,10 +33,13 @@ DateTime _getUpToDateCli(DateTime upToDate) {
 }
 
 DateTime _getFromDateCli(DateTime fromDate) {
-  print('Calculate Daily Balance from $fromDate (Y/N - Just Enter for Yes) : ');
-  String? fromDateInput = stdin.readLineSync();
-  if (fromDateInput != "") {
-    fromDate = input_utils_cli.getValidNormalLowerDateCli(fromDate);
+  if (fromDate.day != 1) {
+    print(
+        'Calculate Daily Balance from $fromDate (Y/N - Just Enter for Yes) : ');
+    String? fromDateInput = stdin.readLineSync();
+    if (fromDateInput != "") {
+      fromDate = input_utils_cli.getValidNormalLowerDateCli(fromDate);
+    }
   }
   return fromDate;
 }
@@ -55,20 +58,15 @@ SplayTreeMap<DateTime, double>
         Pair<transactions_with_last_balance_parser.LastBalance,
                 Map<DateTime, double>>
             transactionSumsWithLastBalance) {
-  DateTime upToDate =
-      _getUpToDateCli(transactionSumsWithLastBalance.value.keys.first);
-  double lastBalance;
-  if (upToDate.compareTo(
-          normalDateFormat.parse(transactionSumsWithLastBalance.key.date)) ==
+  if (transactionSumsWithLastBalance.value.keys.first.compareTo(
+          normalDateFormat.parse(transactionSumsWithLastBalance.key.date)) >=
       0) {
-    lastBalance = transactionSumsWithLastBalance.key.amount.toDouble();
-  } else {
-    lastBalance = input_utils_cli
-        .getValidDoubleCli('Enter the last balance on $upToDate : ');
+    print('outdated last balance');
+    //throw exception
   }
   return daily_balance_operations.calculateDailyBalancesFromTransactions(
-      upToDate,
-      lastBalance,
+      normalDateFormat.parse(transactionSumsWithLastBalance.key.date),
+      transactionSumsWithLastBalance.key.amount.toDouble(),
       _getFromDateCli(transactionSumsWithLastBalance.value.keys.last),
       transactionSumsWithLastBalance.value);
 }
@@ -79,46 +77,42 @@ Map<DateTime, Triple<double, double, double>>
         double minimumBalance,
         double currentAverageDailyBalance,
         int forDays) {
-  Map<DateTime, Triple<double, double, double>> forecastResult =
+  Map<DateTime, Quad<double, double, double, int>> forecastResult =
       daily_balance_operations.prepareForecastForDaysWithSameBalance(
           dailyBalances, minimumBalance, currentAverageDailyBalance, forDays);
   Map<DateTime, Triple<double, double, double>> forecastResultWithRepay = {};
   bool isOneTimeResolveIsNotOver = true;
   double oneTimeResolveAmount = 0;
+  double previousDailyBalancesSum = 0;
   for (DateTime date in forecastResult.keys) {
-    if (forecastResult[date]!.middle != 0) {
+    if (forecastResult[date]!.second != 0) {
       if (isOneTimeResolveIsNotOver) {
         print(
-            'Need to pay ${forecastResult[date]!.middle} on $date, OK (Y/N - Just Enter for Yes) : ');
+            'Need to pay ${forecastResult[date]!.second} on $date, OK (Y/N - Just Enter for Yes) : ');
         String? solutionPayInput = stdin.readLineSync();
         if (solutionPayInput == "") {
-          forecastResultWithRepay[date] = Triple(forecastResult[date]!.left,
-              forecastResult[date]!.middle, forecastResult[date]!.middle);
+          forecastResultWithRepay[date] = Triple(forecastResult[date]!.first,
+              forecastResult[date]!.second, forecastResult[date]!.second);
           isOneTimeResolveIsNotOver = false;
-          oneTimeResolveAmount = forecastResult[date]!.middle;
+          oneTimeResolveAmount = forecastResult[date]!.second;
+          previousDailyBalancesSum = forecastResult[date]!.third;
         } else {
           forecastResultWithRepay[date] = Triple(
-              forecastResult[date]!.left, forecastResult[date]!.middle, 0);
+              forecastResult[date]!.first, forecastResult[date]!.second, 0);
         }
       } else {
-        int noOfDays =
-            (forecastResult[date]!.middle + forecastResult[date]!.right) ~/
-                minimumBalance;
-        double updatedDailyBalancesSum =
-            forecastResult[date]!.right + oneTimeResolveAmount;
-        double repayAmount = (minimumBalance * noOfDays) -
-            updatedDailyBalancesSum -
-            minimumBalance;
-        forecastResultWithRepay[date] =
-            Triple((updatedDailyBalancesSum / noOfDays), 0, repayAmount);
-        if (repayAmount >= oneTimeResolveAmount) {
-          break;
-        }
+        forecastResultWithRepay[date] = Triple(
+            minimumBalance,
+            0,
+            ((forecastResult[date]!.third - previousDailyBalancesSum) +
+                    oneTimeResolveAmount) -
+                minimumBalance);
+        break;
       }
     } else {
       //TODO : Improve Triple : Constructor of Pair, right items
       forecastResultWithRepay[date] =
-          Triple(forecastResult[date]!.left, forecastResult[date]!.middle, 0);
+          Triple(forecastResult[date]!.first, forecastResult[date]!.second, 0);
     }
   }
   return forecastResultWithRepay;

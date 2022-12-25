@@ -12,8 +12,7 @@ import 'package:savings_bank_minimum_balance_resolver_common/transactions_with_l
     as transactions_with_last_balance_parser;
 import 'package:sugar/collection.dart';
 
-double _getCurrentAverageDailyBalance(
-    double sumOfDailyBalances, int numberOfDays) {
+double _getAverageDailyBalance(double sumOfDailyBalances, int numberOfDays) {
   return sumOfDailyBalances / numberOfDays;
 }
 
@@ -33,8 +32,7 @@ double _getCurrentAverageDailyBalanceFromDailyBalanceList(
   for (DailyBalance dailyBalance in dailyBalances) {
     sumOfDailyBalances += dailyBalance.balance;
   }
-  return _getCurrentAverageDailyBalance(
-      sumOfDailyBalances, dailyBalances.length);
+  return _getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length);
 }
 
 Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
@@ -188,12 +186,11 @@ Pair<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
   dailyBalances.forEach((DateTime date, double dailyBalance) {
     sumOfDailyBalances += dailyBalance;
   });
-  return Pair(
-      _getCurrentAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
+  return Pair(_getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
       sumOfDailyBalances);
 }
 
-Map<DateTime, Triple<double, double, double>>
+Map<DateTime, Quad<double, double, double, int>>
     prepareForecastWithSolutionForOneTimeAlteredBalance(
         Map<DateTime, double> dailyBalances,
         double minimumBalance,
@@ -206,7 +203,7 @@ Map<DateTime, Triple<double, double, double>>
         int? forDays}) {
   bool isOneTimeNotOver = true;
 
-  Map<DateTime, Triple<double, double, double>> forecastResult = {};
+  Map<DateTime, Quad<double, double, double, int>> forecastResult = {};
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -250,8 +247,8 @@ Map<DateTime, Triple<double, double, double>>
           (minimumBalance * noOfDays) - sumOfDailyBalancesForExtraOneDay;
     }
 
-    forecastResult[lastDay] = Triple(currentAverageDailyBalance, solutionAmount,
-        sumOfDailyBalancesForExtraOneDay);
+    forecastResult[lastDay] = Quad(currentAverageDailyBalance, solutionAmount,
+        sumOfDailyBalancesForExtraOneDay, noOfDays);
     dayCounter++;
   }
   return forecastResult;
@@ -271,7 +268,7 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-Map<DateTime, Triple<double, double, double>> prepareForecastForSameBalance(
+Map<DateTime, Quad<double, double, double, int>> prepareForecastForSameBalance(
     Map<DateTime, double> dailyBalances,
     double minimumBalance,
     double currentAverageDailyBalance) {
@@ -280,7 +277,7 @@ Map<DateTime, Triple<double, double, double>> prepareForecastForSameBalance(
       isNotSameAmount: false);
 }
 
-Map<DateTime, Triple<double, double, double>>
+Map<DateTime, Quad<double, double, double, int>>
     prepareForecastForDaysWithSameBalance(Map<DateTime, double> dailyBalances,
         double minimumBalance, double currentAverageDailyBalance, int forDays) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
