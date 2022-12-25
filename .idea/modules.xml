@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/savings_bank_minimum_balance_resolver_common.iml" filepath="$PROJECT_DIR$/savings_bank_minimum_balance_resolver_common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/savings_bank_minimum_balance_analyzer_dart.iml" filepath="$PROJECT_DIR$/.idea/savings_bank_minimum_balance_analyzer_dart.iml" />
     </modules>
   </component>
 </project>
