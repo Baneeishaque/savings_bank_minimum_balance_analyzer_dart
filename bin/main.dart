@@ -1,5 +1,6 @@
 import 'package:savings_bank_minimum_balance_resolver_common/constants.dart'
     as constants;
+import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_operations.dart'
     as daily_balance_operations;
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_operations_cli.dart'
@@ -32,8 +33,11 @@ void main(List<String> arguments) async {
             'transactions_kgb.csv', constants.kgbMinimumBalance);
         break;
       case 3:
-        // print('Average Daily Balance : ${await daily_balance_operations
-        //     .getCurrentAverageDailyBalanceFromCsv('dailyBalances_pnb.csv')}');
+        invokeForecast({
+          for (DailyBalance dailyBalance in await daily_balance_operations
+              .readDailyBalancesFromCsv('dailyBalances_pnb.csv'))
+            dailyBalance.date: dailyBalance.balance
+        }, constants.pnbMinimumBalance);
         break;
       case 4:
         // await invokeGetAverageBalanceFromTransactionsCsv(

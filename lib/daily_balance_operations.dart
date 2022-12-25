@@ -16,7 +16,7 @@ double _getAverageDailyBalance(double sumOfDailyBalances, int numberOfDays) {
   return sumOfDailyBalances / numberOfDays;
 }
 
-Future<List<DailyBalance>> _readDailyBalancesFromCsv(String csvPath) async {
+Future<List<DailyBalance>> readDailyBalancesFromCsv(String csvPath) async {
   List<DailyBalance> dailyBalances = List.empty(growable: true);
   for (List<String> row in (await readCsv(csvPath))) {
     dailyBalances.add(DailyBalance(
@@ -26,7 +26,7 @@ Future<List<DailyBalance>> _readDailyBalancesFromCsv(String csvPath) async {
   return dailyBalances;
 }
 
-double _getCurrentAverageDailyBalanceFromDailyBalanceList(
+double getAverageDailyBalanceFromDailyBalanceList(
     List<DailyBalance> dailyBalances) {
   double sumOfDailyBalances = 0;
   for (DailyBalance dailyBalance in dailyBalances) {
@@ -36,8 +36,8 @@ double _getCurrentAverageDailyBalanceFromDailyBalanceList(
 }
 
 Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
-  return _getCurrentAverageDailyBalanceFromDailyBalanceList(
-      await _readDailyBalancesFromCsv(csvPath));
+  return getAverageDailyBalanceFromDailyBalanceList(
+      await readDailyBalancesFromCsv(csvPath));
 }
 
 Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
