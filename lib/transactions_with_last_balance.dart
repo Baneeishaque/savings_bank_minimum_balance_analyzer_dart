@@ -1,7 +1,3 @@
-// To parse this JSON data, do
-//
-//     final transactionsWithLastBalance = transactionsWithLastBalanceFromJson(jsonString);
-
 import 'dart:convert';
 
 TransactionsWithLastBalance transactionsWithLastBalanceFromJson(String str) =>
