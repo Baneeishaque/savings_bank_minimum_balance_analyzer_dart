@@ -47,4 +47,9 @@ class LastBalance {
         "amount": amount,
         "date": date,
       };
+
+  @override
+  String toString() {
+    return 'LastBalance{amount: $amount, date: $date}';
+  }
 }
