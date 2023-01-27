@@ -32,6 +32,7 @@ double getAverageDailyBalanceFromDailyBalanceList(
   for (DailyBalance dailyBalance in dailyBalances) {
     sumOfDailyBalances += dailyBalance.balance;
   }
+  //TODO : Verify daily balances number of days
   return _getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length);
 }
 

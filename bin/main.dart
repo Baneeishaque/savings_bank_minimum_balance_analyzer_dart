@@ -25,8 +25,8 @@ void main(List<String> arguments) async {
     choice = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice) {
       case 1:
-        print(
-            'Average Daily Balance : ${await daily_balance_operations.getCurrentAverageDailyBalanceFromCsv('dailyBalances_kgb.csv')}');
+        // print(
+        //     'Average Daily Balance : ${await daily_balance_operations.getCurrentAverageDailyBalanceFromCsv('dailyBalances_kgb.csv')}');
         break;
       case 2:
         await invokeGetAverageBalanceFromTransactionsCsv(
