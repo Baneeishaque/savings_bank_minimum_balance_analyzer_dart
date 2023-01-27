@@ -25,6 +25,11 @@ void main(List<String> arguments) async {
     choice = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice) {
       case 1:
+        invokeForecast({
+          for (DailyBalance dailyBalance in await daily_balance_operations
+              .readDailyBalancesFromCsv('dailyBalances_kgb.csv'))
+            dailyBalance.date: dailyBalance.balance
+        }, constants.kgbMinimumBalance);
         // print(
         //     'Average Daily Balance : ${await daily_balance_operations.getCurrentAverageDailyBalanceFromCsv('dailyBalances_kgb.csv')}');
         break;
