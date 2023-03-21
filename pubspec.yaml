@@ -1,15 +1,18 @@
 name: savings_bank_minimum_balance_resolver_common
 description: A sample command-line application.
 version: 1.0.0
-# repository: https://github.com/my_org/my_repo
+
+publish_to: none
 
 environment:
   sdk: '>=3.0.0-322.0.dev <4.0.0'
 
 dependencies:
-  grizzly_io: ^3.0.1
-  intl: ^0.17.0
-  dart_date: ^1.1.1
+  grizzly_io:
+    git: https://github.com/Baneeishaque/grizzly_io.git
+  intl: ^0.18.0
+  dart_date:
+    git: https://github.com/spaznuski/dart_date.git
   sugar: ^2.4.1
 
 dev_dependencies:

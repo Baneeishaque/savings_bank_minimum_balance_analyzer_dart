@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:grizzly_io/io_loader.dart';
+import 'package:grizzly_io/grizzly_io.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
 import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
     as date_formats;
@@ -18,7 +18,7 @@ double _getAverageDailyBalance(double sumOfDailyBalances, int numberOfDays) {
 
 Future<List<DailyBalance>> readDailyBalancesFromCsv(String csvPath) async {
   List<DailyBalance> dailyBalances = List.empty(growable: true);
-  for (List<String> row in (await readCsv(csvPath))) {
+  for (List<String> row in (await csv.read(csvPath))) {
     dailyBalances.add(DailyBalance(
         date: date_formats.normalDateFormat.parseStrict(row[0]),
         balance: double.parse(row[1])));
@@ -42,7 +42,7 @@ Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
 
 Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
   List<Transaction> transactions = List.empty(growable: true);
-  for (List<String> row in (await readCsv(csvPath))) {
+  for (List<String> row in (await csv.read(csvPath))) {
     transactions.add(Transaction(
         date: date_formats.normalDateFormat.parseStrict(row[0]),
         amount: double.parse(row[1])));
