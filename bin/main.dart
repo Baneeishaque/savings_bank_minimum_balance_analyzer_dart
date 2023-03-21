@@ -18,9 +18,11 @@ void main(List<String> arguments) async {
     print('4 : Calculate Average Balance from Transactions CSV : PNB');
     print('5 : Calculate Average Balance from Transactions JSON : KGB');
     print(
-        '6 : Calculate Average Balance from Transactions with Last Balance JSON : KGB');
+        '6 : Calculate Average Balance from Transactions with Last Balance JSON : KGB 1');
     print(
         '7 : Calculate Average Balance from Transactions with Last Balance JSON (Up-to Yesterday) : KGB');
+    print(
+        '8 : Calculate Average Balance from Transactions with Last Balance JSON : KGB 2');
     print('0 : Exit');
     choice = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice) {
@@ -58,10 +60,19 @@ void main(List<String> arguments) async {
                 .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
                     daily_balance_operations
                         .prepareTransactionSumsWithLastBalanceFromJson(
-                            'transactions_with_last_balance_kgb.json')),
+                            'transactions_with_last_balance_kgb1.json')),
             constants.kgbMinimumBalance);
         break;
       case 7:
+        break;
+      case 8:
+        // invokeForecast(
+        //     daily_balance_operations_cli
+        //         .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
+        //         daily_balance_operations
+        //             .prepareTransactionSumsWithLastBalanceFromJson(
+        //             'transactions_with_last_balance_kgb2.json')),
+        //     constants.kgbMinimumBalance);
         break;
       case 0:
         break;

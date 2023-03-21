@@ -19,7 +19,7 @@ class TransactionsWithLastBalance {
       TransactionsWithLastBalance(
         lastBalance: LastBalance.fromJson(json["lastBalance"]),
         transactions: Map.from(json["transactions"]).map((k, v) =>
-            MapEntry<String, List<int>>(k, List<int>.from(v.map((x) => x)))),
+            MapEntry<String, List<num>>(k, List<num>.from(v.map((x) => x)))),
       );
 
   Map<String, dynamic> toJson() => {
