@@ -21,7 +21,7 @@ jobs:
       # Note: This workflow uses the latest stable version of the Dart SDK.
       # You can specify other versions if desired, see documentation here:
       # https://github.com/dart-lang/setup-dart/blob/main/README.md
-      - uses: dart-lang/setup-dart@346c32c8b20ddd63db3946c49cce4f0eab14a77f
+      - uses: dart-lang/setup-dart@77b84bec90e9a0d07f68a3cedd3651ba9e606a12
         with:
           sdk: 3.0.0-339.0.dev
 
