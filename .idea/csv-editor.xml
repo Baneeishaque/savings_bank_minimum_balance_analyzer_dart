@@ -17,13 +17,6 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\dailyBalances_pnb.csv_sample">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\transactions_kgb.csv">
           <value>
             <Attribute>
