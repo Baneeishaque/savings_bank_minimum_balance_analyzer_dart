@@ -87,14 +87,12 @@ Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
 }
 
 SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactions(
-    DateTime upToDate,
-    double lastBalance,
-    DateTime fromDate,
-    Map<DateTime, double> transactionSums) {
-  return _fillMissingDailyBalances(_fillDailyBalancesFromDate(
-      fromDate,
-      _fillDailyBalancesUpToAvailableDate(
-          upToDate, transactionSums, lastBalance)));
+  DateTime upToDate,
+  double lastBalance,
+  DateTime fromDate,
+  Map<DateTime, double> transactionSums,
+) {
+  return _prepareDailyBalances(transactionSums);
 }
 
 SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
@@ -125,20 +123,17 @@ SplayTreeMap<DateTime, double> _fillDailyBalancesFromDate(
   return dailyBalances;
 }
 
-SplayTreeMap<DateTime, double> _fillDailyBalancesUpToAvailableDate(
-    DateTime upToDate,
-    Map<DateTime, double> transactionSums,
-    double lastBalance) {
+SplayTreeMap<DateTime, double> _prepareDailyBalances(
+    Map<DateTime, double> transactionSums) {
   SplayTreeMap<DateTime, double> dailyBalances =
       SplayTreeMap((k1, k2) => k1.compareTo(k2));
-  while (upToDate != transactionSums.keys.first) {
-    dailyBalances[upToDate] = lastBalance;
-    upToDate = upToDate.subtract(Duration(days: 1));
-  }
-  transactionSums.forEach((key, value) {
-    dailyBalances[key] = lastBalance;
-    lastBalance += value;
+
+  double lastBalance = 0;
+  transactionSums.forEach((transactionDate, transactionSum) {
+    lastBalance = lastBalance + transactionSum;
+    dailyBalances[transactionDate] = lastBalance;
   });
+
   return dailyBalances;
 }
 
@@ -162,21 +157,12 @@ Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
 
 Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {
   Map<DateTime, double> transactionSums = {};
-  DateTime? currentDateOfTransaction;
-  double currentDayTransactionBalance = 0;
+
   for (Transaction transaction in transactions) {
-    currentDateOfTransaction ??= transaction.date;
-    if (transaction == transactions.last) {
-      transactionSums[currentDateOfTransaction] =
-          currentDayTransactionBalance + transaction.amount;
-      break;
-    } else if (currentDateOfTransaction.compareTo(transaction.date) != 0) {
-      transactionSums[currentDateOfTransaction] = currentDayTransactionBalance;
-      currentDateOfTransaction = transaction.date;
-      currentDayTransactionBalance = 0;
-    }
-    currentDayTransactionBalance += transaction.amount;
+    transactionSums[transaction.date] =
+        (transactionSums[transaction.date] ?? 0) + transaction.amount;
   }
+
   return transactionSums;
 }
 

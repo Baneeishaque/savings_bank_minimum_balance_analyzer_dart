@@ -38,7 +38,7 @@ DateTime _getFromDateCli(DateTime fromDate) {
         'Calculate Daily Balance from $fromDate (Y/N - Just Enter for Yes) : ');
     String? fromDateInput = stdin.readLineSync();
     if (fromDateInput != "") {
-      fromDate = input_utils_cli.getValidNormalLowerDateCli(fromDate);
+      fromDate = input_utils_cli.getValidNormalGreaterDateCli(fromDate);
     }
   }
   return fromDate;
@@ -58,8 +58,8 @@ SplayTreeMap<DateTime, double>
         Pair<transactions_with_last_balance_parser.LastBalance,
                 Map<DateTime, double>>
             transactionSumsWithLastBalance) {
-  if (transactionSumsWithLastBalance.value.keys.first.compareTo(
-          normalDateFormat.parse(transactionSumsWithLastBalance.key.date)) >=
+  if (transactionSumsWithLastBalance.value.keys.last.compareTo(
+          normalDateFormat.parse(transactionSumsWithLastBalance.key.date)) >
       0) {
     print('outdated last balance');
     //throw exception
@@ -67,7 +67,7 @@ SplayTreeMap<DateTime, double>
   return daily_balance_operations.calculateDailyBalancesFromTransactions(
       normalDateFormat.parse(transactionSumsWithLastBalance.key.date),
       transactionSumsWithLastBalance.key.amount.toDouble(),
-      _getFromDateCli(transactionSumsWithLastBalance.value.keys.last),
+      _getFromDateCli(transactionSumsWithLastBalance.value.keys.first),
       transactionSumsWithLastBalance.value);
 }
 
