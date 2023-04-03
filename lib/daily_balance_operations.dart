@@ -92,14 +92,17 @@ SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactions(
   DateTime fromDate,
   Map<DateTime, double> transactionSums,
 ) {
-  return _prepareDailyBalances(transactionSums);
+  return _fillMissingDailyBalances(
+      _prepareDailyBalances(transactionSums), upToDate, lastBalance);
 }
 
 SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
-    SplayTreeMap<DateTime, double> dailyBalances) {
+    SplayTreeMap<DateTime, double> dailyBalances,
+    DateTime upToDate,
+    double lastBalance) {
   DateTime lowerDate = dailyBalances.keys.first;
   double dayBalance = 0;
-  while (lowerDate != dailyBalances.keys.last) {
+  while (lowerDate != upToDate) {
     if (dailyBalances.containsKey(lowerDate)) {
       dayBalance = dailyBalances[lowerDate]!;
     } else {
@@ -107,6 +110,7 @@ SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
     }
     lowerDate = lowerDate.add(Duration(days: 1));
   }
+  dailyBalances[upToDate] = lastBalance;
   return dailyBalances;
 }
 
