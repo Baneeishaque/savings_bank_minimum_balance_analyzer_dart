@@ -66,13 +66,13 @@ void main(List<String> arguments) async {
       case 7:
         break;
       case 8:
-        // invokeForecast(
-        //     daily_balance_operations_cli
-        //         .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
-        //         daily_balance_operations
-        //             .prepareTransactionSumsWithLastBalanceFromJson(
-        //             'transactions_with_last_balance_kgb2.json')),
-        //     constants.kgbMinimumBalance);
+        invokeForecast(
+            daily_balance_operations_cli
+                .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
+                    daily_balance_operations
+                        .prepareTransactionSumsWithLastBalanceFromJson(
+                            'transactions_with_last_balance_kgb2.json')),
+            constants.kgbMinimumBalance);
         break;
       case 0:
         break;
