@@ -11,8 +11,6 @@ dependencies:
   grizzly_io:
     git: https://github.com/Baneeishaque/grizzly_io.git
   intl: ^0.18.0
-  dart_date:
-    git: https://github.com/spaznuski/dart_date.git
   sugar: ^2.4.1
 
 dev_dependencies:
