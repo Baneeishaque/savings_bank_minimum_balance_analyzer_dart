@@ -23,7 +23,7 @@ jobs:
       # https://github.com/dart-lang/setup-dart/blob/main/README.md
       - uses: dart-lang/setup-dart@007c7cbb377cdbdf8922e2f8c4172dc60fbaaf9a
         with:
-          sdk: 3.1.0-155.0.dev
+          sdk: 3.1.0-174.0.dev
 
       - name: Install dependencies
         run: dart pub get
