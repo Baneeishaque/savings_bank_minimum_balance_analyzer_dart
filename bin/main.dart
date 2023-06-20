@@ -115,6 +115,8 @@ void invokeForecast(
     print('5 : Forecast for 5 days with same balance & one time resolve');
     print(
         '6 : Forecast for 5 days with same balance & one time resolve (including repay within minimum balance)');
+    print('7 : Forecast for 10 days with altered balance');
+    print('8 : Forecast for 15 days with altered balance');
     print('0 : Exit');
     choice2 = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice2) {
@@ -144,6 +146,16 @@ void invokeForecast(
       case 6:
         print(
             '${daily_balance_operations_cli.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 5)}');
+        break;
+      case 7:
+        prepareForecastForAlteredBalance(
+            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
+            isForDays: true, forDays: 10);
+        break;
+      case 8:
+        prepareForecastForAlteredBalance(
+            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
+            isForDays: true, forDays: 15);
         break;
       case 0:
         break;
