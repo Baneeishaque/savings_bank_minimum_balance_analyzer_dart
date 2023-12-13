@@ -1,5 +1,4 @@
 name: savings_bank_minimum_balance_resolver_common
-description: A sample command-line application.
 version: 1.0.0
 
 publish_to: none
