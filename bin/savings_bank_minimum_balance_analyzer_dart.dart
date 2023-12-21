@@ -114,11 +114,11 @@ void invokeForecast(
     print('4 : Forecast for 5 days with altered balance');
     print('5 : Forecast for 5 days with same balance & one time resolve');
     print(
-        '6 : Forecast for 5 days with same balance & one time resolve (including repay within minimum balance)');
+        '6 : Forecast for 5 days with same balance & one time resolve (including repaying within minimum balance)');
     print('7 : Forecast for 10 days with altered balance');
     print('8 : Forecast for 15 days with altered balance');
     print(
-        '9 : Forecast for 10 days with same balance & one time resolve (including repay within minimum balance)');
+        '9 : Forecast for 10 days with same balance & one time resolve (including repaying within minimum balance)');
     print('0 : Exit');
     choice2 = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice2) {
