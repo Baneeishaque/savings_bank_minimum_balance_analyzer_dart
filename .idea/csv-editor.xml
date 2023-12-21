@@ -17,6 +17,27 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\old data\dailyBalances_pnb Apr 2023.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\old data\dailyBalances_pnb June 2023.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\old data\dailyBalances_pnb May 2023.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\transactions_kgb.csv">
           <value>
             <Attribute>
