@@ -1,12 +1,12 @@
 import 'dart:collection';
 import 'dart:io';
 
-import 'package:savings_bank_minimum_balance_resolver_common/daily_balance_operations.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations.dart'
     as daily_balance_operations;
-import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart';
-import 'package:savings_bank_minimum_balance_resolver_common/input_utils_cli.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/date_formats.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_cli.dart'
     as input_utils_cli;
-import 'package:savings_bank_minimum_balance_resolver_common/transactions_with_last_balance.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/transactions_with_last_balance.dart'
     as transactions_with_last_balance_parser;
 import 'package:sugar/collection.dart';
 

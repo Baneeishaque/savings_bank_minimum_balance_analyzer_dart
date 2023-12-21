@@ -2,13 +2,13 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:grizzly_io/grizzly_io.dart';
-import 'package:savings_bank_minimum_balance_resolver_common/daily_balance.dart';
-import 'package:savings_bank_minimum_balance_resolver_common/date_formats.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/date_formats.dart'
     as date_formats;
-import 'package:savings_bank_minimum_balance_resolver_common/transaction.dart';
-import 'package:savings_bank_minimum_balance_resolver_common/transactions_parser.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/transaction.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/transactions_parser.dart'
     as transactions_parser;
-import 'package:savings_bank_minimum_balance_resolver_common/transactions_with_last_balance.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/transactions_with_last_balance.dart'
     as transactions_with_last_balance_parser;
 import 'package:sugar/collection.dart';
 
