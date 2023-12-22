@@ -1,3 +1,4 @@
+import 'package:jiffy/jiffy.dart';
 import 'package:savings_bank_minimum_balance_analyzer_dart/constants.dart'
     as constants;
 import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations.dart'
@@ -103,6 +104,7 @@ void invokeGetAverageBalanceFromTransactionsJson(
 
 void invokeForecast(
     Map<DateTime, double> dailyBalances, double minimumBalance) {
+  // Pair<averageDailyBalance, sumOfDailyBalances>
   Pair<double, double> averageDailyBalanceWithSum = daily_balance_operations
       .getAverageDailyBalanceAndSumFromDailyBalanceMap(dailyBalances);
 
@@ -123,6 +125,10 @@ void invokeForecast(
     print('10 : Forecast for 10 days with same balance');
     // print(
     //     '11 : Forecast for 10 days [with altered balance & one time resolve (including repaying within minimum balance)]');
+    print(
+        '12 : Forecast up-to month end [with same balance, one time resolve & next moment withdraw of resolve amount]');
+    // print(
+    //     '13 : Forecast up-to month end [with altered balance, one time resolve & next moment withdraw of resolve amount]');
     print('0 : Exit');
     choice2 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice2) {
@@ -172,6 +178,14 @@ void invokeForecast(
         print('----------');
         print(
             '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
+        break;
+      case 12:
+        int lastDayOfMonth = Jiffy.now().daysInMonth;
+        print(
+            'Forecast for ${lastDayOfMonth == 31 ? '31 / 30' : lastDayOfMonth} days');
+        print('------------------------');
+        print(
+            'Need to deposit ${((lastDayOfMonth == 31 ? 31 : lastDayOfMonth) * minimumBalance) - averageDailyBalanceWithSum.value}');
         break;
       case 0:
         break;
