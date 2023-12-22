@@ -11,7 +11,7 @@ dependencies:
     git: https://github.com/Baneeishaque/grizzly_io.git
   intl: ^0.18.0
   jiffy: ^6.2.1
-  sugar: <3.0.0
+  sugar: <4.0.0
 
 dev_dependencies:
   lints: ^3.0.0
