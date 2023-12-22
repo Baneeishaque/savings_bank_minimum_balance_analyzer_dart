@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:grizzly_io/grizzly_io.dart';
 import 'package:sugar/collection.dart';
 
-import 'models/daily_balance_model.dart';
 import 'date_formats.dart' as date_formats;
-import 'models/transaction_model.dart';
+import 'models/daily_balance_model.dart';
 import 'models/transaction_amount_model.dart' as transactions_parser;
+import 'models/transaction_model.dart';
 import 'models/transactions_with_last_balance_model.dart'
     as transactions_with_last_balance_parser;
 
@@ -151,14 +151,15 @@ Map<DateTime, double> prepareTransactionSumsFromJson(String jsonPath) {
 
 Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
     prepareTransactionSumsWithLastBalanceFromJson(String jsonPath) {
-  Pair<transactions_with_last_balance_parser.LastBalance, List<TransactionModel>>
-      transactionsWithLastBalance =
+  Pair<transactions_with_last_balance_parser.LastBalance,
+          List<TransactionModel>> transactionsWithLastBalance =
       readTransactionsWithLastBalanceFromJson(jsonPath);
   return Pair(transactionsWithLastBalance.key,
       prepareTransactionSums(transactionsWithLastBalance.value));
 }
 
-Map<DateTime, double> prepareTransactionSums(List<TransactionModel> transactions) {
+Map<DateTime, double> prepareTransactionSums(
+    List<TransactionModel> transactions) {
   Map<DateTime, double> transactionSums = {};
 
   for (TransactionModel transaction in transactions) {

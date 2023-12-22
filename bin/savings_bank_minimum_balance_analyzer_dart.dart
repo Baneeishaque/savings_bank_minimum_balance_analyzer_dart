@@ -1,12 +1,12 @@
 import 'package:savings_bank_minimum_balance_analyzer_dart/constants.dart'
     as constants;
-import 'package:savings_bank_minimum_balance_analyzer_dart/models/daily_balance_model.dart';
 import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations.dart'
     as daily_balance_operations;
 import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations_interactive.dart'
-    as daily_balance_operations_cli;
+    as daily_balance_operations_interactive;
 import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_interactive.dart'
-    as input_utils_cli;
+    as input_utils_interactive;
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/daily_balance_model.dart';
 import 'package:sugar/collection.dart';
 
 void main(List<String> arguments) async {
@@ -24,7 +24,7 @@ void main(List<String> arguments) async {
     print(
         '8 : Calculate Average Balance from Transactions with Last Balance JSON : KGB 2');
     print('0 : Exit');
-    choice = input_utils_cli.getValidIntCli('Enter you choice : ');
+    choice = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice) {
       case 1:
         invokeForecast({
@@ -46,28 +46,28 @@ void main(List<String> arguments) async {
             dailyBalance.date: dailyBalance.balance
         }, constants.pnbMinimumBalance);
         break;
-      case 4:
-        // await invokeGetAverageBalanceFromTransactionsCsv(
-        //     'transactions_pnb.csv', constants.pnbMinimumBalance);
-        break;
+      // case 4:
+      //   // await invokeGetAverageBalanceFromTransactionsCsv(
+      //   //     'transactions_pnb.csv', constants.pnbMinimumBalance);
+      //   break;
       case 5:
         invokeGetAverageBalanceFromTransactionsJson(
             'transactions_kgb.json', constants.kgbMinimumBalance);
         break;
       case 6:
         invokeForecast(
-            daily_balance_operations_cli
+            daily_balance_operations_interactive
                 .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
                     daily_balance_operations
                         .prepareTransactionSumsWithLastBalanceFromJson(
                             'transactions_with_last_balance_kgb1.json')),
             constants.kgbMinimumBalance);
         break;
-      case 7:
-        break;
+      // case 7:
+      //   break;
       case 8:
         invokeForecast(
-            daily_balance_operations_cli
+            daily_balance_operations_interactive
                 .calculateDailyBalancesFromTransactionSumsWithLastBalanceCli(
                     daily_balance_operations
                         .prepareTransactionSumsWithLastBalanceFromJson(
@@ -85,17 +85,18 @@ void main(List<String> arguments) async {
 Future<void> invokeGetAverageBalanceFromTransactionsCsv(
     String transactionCsv, double minimumBalance) async {
   invokeForecast(
-      daily_balance_operations_cli.calculateDailyBalancesFromTransactionSumsCli(
-          await daily_balance_operations
-              .prepareTransactionSumsFromCsv(transactionCsv)),
+      daily_balance_operations_interactive
+          .calculateDailyBalancesFromTransactionSumsCli(
+              await daily_balance_operations
+                  .prepareTransactionSumsFromCsv(transactionCsv)),
       minimumBalance);
 }
 
 void invokeGetAverageBalanceFromTransactionsJson(
     String transactionJson, double minimumBalance) {
   invokeForecast(
-      daily_balance_operations_cli.calculateDailyBalancesFromTransactionSumsCli(
-          daily_balance_operations
+      daily_balance_operations_interactive
+          .calculateDailyBalancesFromTransactionSumsCli(daily_balance_operations
               .prepareTransactionSumsFromJson(transactionJson)),
       minimumBalance);
 }
@@ -114,14 +115,16 @@ void invokeForecast(
     print('4 : Forecast for 5 days with altered balance');
     // print('5 : Forecast for 5 days with same balance & one time resolve');
     print(
-        '6 : Forecast for 5 days with same balance & one time resolve (including repaying within minimum balance)');
+        '6 : Forecast for 5 days [with same balance & one time resolve (including repaying within minimum balance)]');
     print('7 : Forecast for 10 days with altered balance');
     print('8 : Forecast for 15 days with altered balance');
     print(
-        '9 : Forecast for 10 days with same balance & one time resolve (including repaying within minimum balance)');
+        '9 : Forecast for 10 days [with same balance & one time resolve (including repaying within minimum balance)]');
     print('10 : Forecast for 10 days with same balance');
+    // print(
+    //     '11 : Forecast for 10 days [with altered balance & one time resolve (including repaying within minimum balance)]');
     print('0 : Exit');
-    choice2 = input_utils_cli.getValidIntCli('Enter you choice : ');
+    choice2 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice2) {
       case 1:
         print('Forecast');
@@ -144,11 +147,11 @@ void invokeForecast(
             dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
             isForDays: true, forDays: 5);
         break;
-      case 5:
-        break;
+      // case 5:
+      //   break;
       case 6:
         print(
-            '${daily_balance_operations_cli.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 5)}');
+            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 5)}');
         break;
       case 7:
         prepareForecastForAlteredBalance(
@@ -162,7 +165,7 @@ void invokeForecast(
         break;
       case 9:
         print(
-            '${daily_balance_operations_cli.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
+            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
         break;
       case 10:
         print('Forecast');
@@ -188,10 +191,11 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
     print('3 : One Time Alteration - Timed Withdraw');
     // print('4 : One Time Alteration - Timed Deposit');
     print('0 : Exit');
-    choice3 = input_utils_cli.getValidIntCli('Enter you choice : ');
+    choice3 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice3) {
       case 1:
-        double amount = input_utils_cli.getValidDoubleCli('Enter amount : ');
+        double amount =
+            input_utils_interactive.getValidDoubleCli('Enter amount : ');
         print('Forecast');
         print('----------');
         if (isForDays) {
@@ -202,22 +206,23 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
               '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount)}');
         }
         break;
-      case 2:
-        break;
+      // case 2:
+      //   break;
       case 3:
-        double amount = input_utils_cli.getValidDoubleCli('Enter amount : ');
+        double amount =
+            input_utils_interactive.getValidDoubleCli('Enter amount : ');
         print('Forecast');
         print('----------');
         if (isForDays) {
           print(
-              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last), isForDays: true, forDays: forDays)}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_interactive.getValidNormalGreaterDateCli(dailyBalances.keys.last), isForDays: true, forDays: forDays)}');
         } else {
           print(
-              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_cli.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
+              '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_interactive.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
         }
         break;
-      case 4:
-        break;
+      // case 4:
+      //   break;
       case 0:
         break;
       default:
