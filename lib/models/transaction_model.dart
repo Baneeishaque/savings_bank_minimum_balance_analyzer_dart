@@ -1,9 +1,8 @@
-class Transaction {
+class TransactionModel {
   DateTime date = DateTime.now();
   double amount = 0;
 
-//<editor-fold desc="Data Methods">
-  Transaction({
+  TransactionModel({
     required this.date,
     required this.amount,
   });
@@ -11,7 +10,7 @@ class Transaction {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is Transaction &&
+      (other is TransactionModel &&
           runtimeType == other.runtimeType &&
           date == other.date &&
           amount == other.amount);
@@ -24,11 +23,11 @@ class Transaction {
     return 'Transaction{ date: $date, amount: $amount,}';
   }
 
-  Transaction copyWith({
+  TransactionModel copyWith({
     DateTime? date,
     double? amount,
   }) {
-    return Transaction(
+    return TransactionModel(
       date: date ?? this.date,
       amount: amount ?? this.amount,
     );
@@ -41,12 +40,10 @@ class Transaction {
     };
   }
 
-  factory Transaction.fromMap(Map<String, dynamic> map) {
-    return Transaction(
+  factory TransactionModel.fromMap(Map<String, dynamic> map) {
+    return TransactionModel(
       date: map['date'] as DateTime,
       amount: map['amount'] as double,
     );
   }
-
-//</editor-fold>
 }

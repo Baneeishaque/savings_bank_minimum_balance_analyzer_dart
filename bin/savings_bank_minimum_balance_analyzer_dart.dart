@@ -1,11 +1,11 @@
 import 'package:savings_bank_minimum_balance_analyzer_dart/constants.dart'
     as constants;
-import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/daily_balance_model.dart';
 import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations.dart'
     as daily_balance_operations;
-import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations_cli.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations_interactive.dart'
     as daily_balance_operations_cli;
-import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_cli.dart'
+import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_interactive.dart'
     as input_utils_cli;
 import 'package:sugar/collection.dart';
 
@@ -15,12 +15,12 @@ void main(List<String> arguments) async {
     print('1 : Calculate Average Balance from Daily Balances CSV : KGB');
     print('2 : Calculate Average Balance from Transactions CSV : KGB');
     print('3 : Calculate Average Balance from Daily Balances CSV : PNB');
-    print('4 : Calculate Average Balance from Transactions CSV : PNB');
+    // print('4 : Calculate Average Balance from Transactions CSV : PNB');
     print('5 : Calculate Average Balance from Transactions JSON : KGB');
     print(
         '6 : Calculate Average Balance from Transactions with Last Balance JSON : KGB 1');
-    print(
-        '7 : Calculate Average Balance from Transactions with Last Balance JSON (Up-to Yesterday) : KGB');
+    // print(
+    //     '7 : Calculate Average Balance from Transactions with Last Balance JSON (Up-to Yesterday) : KGB');
     print(
         '8 : Calculate Average Balance from Transactions with Last Balance JSON : KGB 2');
     print('0 : Exit');
@@ -28,7 +28,7 @@ void main(List<String> arguments) async {
     switch (choice) {
       case 1:
         invokeForecast({
-          for (DailyBalance dailyBalance in await daily_balance_operations
+          for (DailyBalanceModel dailyBalance in await daily_balance_operations
               .readDailyBalancesFromCsv('dailyBalances_kgb.csv'))
             dailyBalance.date: dailyBalance.balance
         }, constants.kgbMinimumBalance);
@@ -41,7 +41,7 @@ void main(List<String> arguments) async {
         break;
       case 3:
         invokeForecast({
-          for (DailyBalance dailyBalance in await daily_balance_operations
+          for (DailyBalanceModel dailyBalance in await daily_balance_operations
               .readDailyBalancesFromCsv('dailyBalances_pnb.csv'))
             dailyBalance.date: dailyBalance.balance
         }, constants.pnbMinimumBalance);
@@ -112,13 +112,14 @@ void invokeForecast(
     print('2 : Forecast within minimum balance on altered balance');
     print('3 : Forecast for 5 days with same balance');
     print('4 : Forecast for 5 days with altered balance');
-    print('5 : Forecast for 5 days with same balance & one time resolve');
+    // print('5 : Forecast for 5 days with same balance & one time resolve');
     print(
         '6 : Forecast for 5 days with same balance & one time resolve (including repaying within minimum balance)');
     print('7 : Forecast for 10 days with altered balance');
     print('8 : Forecast for 15 days with altered balance');
     print(
         '9 : Forecast for 10 days with same balance & one time resolve (including repaying within minimum balance)');
+    print('10 : Forecast for 10 days with same balance');
     print('0 : Exit');
     choice2 = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice2) {
@@ -163,6 +164,12 @@ void invokeForecast(
         print(
             '${daily_balance_operations_cli.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
         break;
+      case 10:
+        print('Forecast');
+        print('----------');
+        print(
+            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
+        break;
       case 0:
         break;
       default:
@@ -177,9 +184,9 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
   int choice3;
   do {
     print('1 : One Time Alteration - Immediate Withdraw');
-    print('2 : One Time Alteration - Immediate Deposit');
+    // print('2 : One Time Alteration - Immediate Deposit');
     print('3 : One Time Alteration - Timed Withdraw');
-    print('4 : One Time Alteration - Timed Deposit');
+    // print('4 : One Time Alteration - Timed Deposit');
     print('0 : Exit');
     choice3 = input_utils_cli.getValidIntCli('Enter you choice : ');
     switch (choice3) {

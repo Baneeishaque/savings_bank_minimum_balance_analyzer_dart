@@ -2,24 +2,23 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:grizzly_io/grizzly_io.dart';
-import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance.dart';
-import 'package:savings_bank_minimum_balance_analyzer_dart/date_formats.dart'
-    as date_formats;
-import 'package:savings_bank_minimum_balance_analyzer_dart/transaction.dart';
-import 'package:savings_bank_minimum_balance_analyzer_dart/transactions_parser.dart'
-    as transactions_parser;
-import 'package:savings_bank_minimum_balance_analyzer_dart/transactions_with_last_balance.dart'
-    as transactions_with_last_balance_parser;
 import 'package:sugar/collection.dart';
 
-double _getAverageDailyBalance(double sumOfDailyBalances, int numberOfDays) {
+import 'models/daily_balance_model.dart';
+import 'date_formats.dart' as date_formats;
+import 'models/transaction_model.dart';
+import 'models/transaction_amount_model.dart' as transactions_parser;
+import 'models/transactions_with_last_balance_model.dart'
+    as transactions_with_last_balance_parser;
+
+double getAverageDailyBalance(double sumOfDailyBalances, int numberOfDays) {
   return sumOfDailyBalances / numberOfDays;
 }
 
-Future<List<DailyBalance>> readDailyBalancesFromCsv(String csvPath) async {
-  List<DailyBalance> dailyBalances = List.empty(growable: true);
+Future<List<DailyBalanceModel>> readDailyBalancesFromCsv(String csvPath) async {
+  List<DailyBalanceModel> dailyBalances = List.empty(growable: true);
   for (List<String> row in (await csv.read(csvPath))) {
-    dailyBalances.add(DailyBalance(
+    dailyBalances.add(DailyBalanceModel(
         date: date_formats.normalDateFormat.parseStrict(row[0]),
         balance: double.parse(row[1])));
   }
@@ -27,12 +26,12 @@ Future<List<DailyBalance>> readDailyBalancesFromCsv(String csvPath) async {
 }
 
 double getAverageDailyBalanceFromDailyBalanceList(
-    List<DailyBalance> dailyBalances) {
+    List<DailyBalanceModel> dailyBalances) {
   double sumOfDailyBalances = 0;
-  for (DailyBalance dailyBalance in dailyBalances) {
+  for (DailyBalanceModel dailyBalance in dailyBalances) {
     sumOfDailyBalances += dailyBalance.balance;
   }
-  return _getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length);
+  return getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length);
 }
 
 Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
@@ -40,27 +39,27 @@ Future<double> getCurrentAverageDailyBalanceFromCsv(String csvPath) async {
       await readDailyBalancesFromCsv(csvPath));
 }
 
-Future<List<Transaction>> _readTransactionsFromCsv(String csvPath) async {
-  List<Transaction> transactions = List.empty(growable: true);
+Future<List<TransactionModel>> readTransactionsFromCsv(String csvPath) async {
+  List<TransactionModel> transactions = List.empty(growable: true);
   for (List<String> row in (await csv.read(csvPath))) {
-    transactions.add(Transaction(
+    transactions.add(TransactionModel(
         date: date_formats.normalDateFormat.parseStrict(row[0]),
         amount: double.parse(row[1])));
   }
   return transactions;
 }
 
-List<Transaction> _readTransactionsFromJson(String jsonPath) {
-  Map<String, List<transactions_parser.TransactionAmountJson>>
+List<TransactionModel> readTransactionsFromJson(String jsonPath) {
+  Map<String, List<transactions_parser.TransactionAmountModel>>
       parsedTransactions = transactions_parser
-          .transactionsFromJson(File(jsonPath).readAsStringSync());
-  List<Transaction> transactions = List.empty(growable: true);
+          .transactionAmountFromJson(File(jsonPath).readAsStringSync());
+  List<TransactionModel> transactions = List.empty(growable: true);
   parsedTransactions.forEach((String parsedTransactionDate,
-      List<transactions_parser.TransactionAmountJson>
+      List<transactions_parser.TransactionAmountModel>
           parsedTransactionAmounts) {
-    for (transactions_parser.TransactionAmountJson parsedTransactionAmount
+    for (transactions_parser.TransactionAmountModel parsedTransactionAmount
         in parsedTransactionAmounts) {
-      transactions.add(Transaction(
+      transactions.add(TransactionModel(
           date: date_formats.normalDateFormat.parse(parsedTransactionDate),
           amount: parsedTransactionAmount.amount.toDouble()));
     }
@@ -68,17 +67,17 @@ List<Transaction> _readTransactionsFromJson(String jsonPath) {
   return transactions;
 }
 
-Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
-    _readTransactionsWithLastBalanceFromJson(String jsonPath) {
-  transactions_with_last_balance_parser.TransactionsWithLastBalance
+Pair<transactions_with_last_balance_parser.LastBalance, List<TransactionModel>>
+    readTransactionsWithLastBalanceFromJson(String jsonPath) {
+  transactions_with_last_balance_parser.TransactionsWithLastBalanceModel
       parsedTransactions =
       transactions_with_last_balance_parser.transactionsWithLastBalanceFromJson(
           File(jsonPath).readAsStringSync());
-  List<Transaction> transactions = List.empty(growable: true);
+  List<TransactionModel> transactions = List.empty(growable: true);
   parsedTransactions.transactions.forEach(
       (String parsedTransactionDate, List<num> parsedTransactionAmounts) {
     for (num parsedTransactionAmount in parsedTransactionAmounts) {
-      transactions.add(Transaction(
+      transactions.add(TransactionModel(
           date: date_formats.normalDateFormat.parse(parsedTransactionDate),
           amount: parsedTransactionAmount.toDouble()));
     }
@@ -92,11 +91,11 @@ SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactions(
   DateTime fromDate,
   Map<DateTime, double> transactionSums,
 ) {
-  return _fillMissingDailyBalances(
-      _prepareDailyBalances(transactionSums), upToDate, lastBalance);
+  return fillMissingDailyBalances(
+      prepareDailyBalances(transactionSums), upToDate, lastBalance);
 }
 
-SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
+SplayTreeMap<DateTime, double> fillMissingDailyBalances(
     SplayTreeMap<DateTime, double> dailyBalances,
     DateTime upToDate,
     double lastBalance) {
@@ -114,7 +113,7 @@ SplayTreeMap<DateTime, double> _fillMissingDailyBalances(
   return dailyBalances;
 }
 
-SplayTreeMap<DateTime, double> _fillDailyBalancesFromDate(
+SplayTreeMap<DateTime, double> fillDailyBalancesFromDate(
     DateTime? secondFromDate, SplayTreeMap<DateTime, double> dailyBalances) {
   if (secondFromDate != null) {
     DateTime fromDate = dailyBalances.keys.first;
@@ -127,7 +126,7 @@ SplayTreeMap<DateTime, double> _fillDailyBalancesFromDate(
   return dailyBalances;
 }
 
-SplayTreeMap<DateTime, double> _prepareDailyBalances(
+SplayTreeMap<DateTime, double> prepareDailyBalances(
     Map<DateTime, double> transactionSums) {
   SplayTreeMap<DateTime, double> dailyBalances =
       SplayTreeMap((k1, k2) => k1.compareTo(k2));
@@ -143,26 +142,26 @@ SplayTreeMap<DateTime, double> _prepareDailyBalances(
 
 Future<Map<DateTime, double>> prepareTransactionSumsFromCsv(
     String csvPath) async {
-  return _prepareTransactionSums(await _readTransactionsFromCsv(csvPath));
+  return prepareTransactionSums(await readTransactionsFromCsv(csvPath));
 }
 
 Map<DateTime, double> prepareTransactionSumsFromJson(String jsonPath) {
-  return _prepareTransactionSums(_readTransactionsFromJson(jsonPath));
+  return prepareTransactionSums(readTransactionsFromJson(jsonPath));
 }
 
 Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
     prepareTransactionSumsWithLastBalanceFromJson(String jsonPath) {
-  Pair<transactions_with_last_balance_parser.LastBalance, List<Transaction>>
+  Pair<transactions_with_last_balance_parser.LastBalance, List<TransactionModel>>
       transactionsWithLastBalance =
-      _readTransactionsWithLastBalanceFromJson(jsonPath);
+      readTransactionsWithLastBalanceFromJson(jsonPath);
   return Pair(transactionsWithLastBalance.key,
-      _prepareTransactionSums(transactionsWithLastBalance.value));
+      prepareTransactionSums(transactionsWithLastBalance.value));
 }
 
-Map<DateTime, double> _prepareTransactionSums(List<Transaction> transactions) {
+Map<DateTime, double> prepareTransactionSums(List<TransactionModel> transactions) {
   Map<DateTime, double> transactionSums = {};
 
-  for (Transaction transaction in transactions) {
+  for (TransactionModel transaction in transactions) {
     transactionSums[transaction.date] =
         (transactionSums[transaction.date] ?? 0) + transaction.amount;
   }
@@ -176,7 +175,7 @@ Pair<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
   dailyBalances.forEach((DateTime date, double dailyBalance) {
     sumOfDailyBalances += dailyBalance;
   });
-  return Pair(_getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
+  return Pair(getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
       sumOfDailyBalances);
 }
 

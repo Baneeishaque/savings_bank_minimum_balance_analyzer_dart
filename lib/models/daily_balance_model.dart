@@ -1,9 +1,8 @@
-class DailyBalance {
+class DailyBalanceModel {
   DateTime date = DateTime.now();
   double balance = 0;
 
-//<editor-fold desc="Data Methods">
-  DailyBalance({
+  DailyBalanceModel({
     required this.date,
     required this.balance,
   });
@@ -11,7 +10,7 @@ class DailyBalance {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is DailyBalance &&
+      (other is DailyBalanceModel &&
           runtimeType == other.runtimeType &&
           date == other.date &&
           balance == other.balance);
@@ -24,11 +23,11 @@ class DailyBalance {
     return 'DailyBalance{ date: $date, balance: $balance,}';
   }
 
-  DailyBalance copyWith({
+  DailyBalanceModel copyWith({
     DateTime? date,
     double? balance,
   }) {
-    return DailyBalance(
+    return DailyBalanceModel(
       date: date ?? this.date,
       balance: balance ?? this.balance,
     );
@@ -41,11 +40,10 @@ class DailyBalance {
     };
   }
 
-  factory DailyBalance.fromMap(Map<String, dynamic> map) {
-    return DailyBalance(
+  factory DailyBalanceModel.fromMap(Map<String, dynamic> map) {
+    return DailyBalanceModel(
       date: map['date'] as DateTime,
       balance: map['balance'] as double,
     );
   }
-//</editor-fold>
 }
