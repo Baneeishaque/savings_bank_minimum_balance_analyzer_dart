@@ -29,8 +29,8 @@ void main(List<String> arguments) async {
     switch (choice) {
       case 1:
         invokeForecast({
-          for (DailyBalanceModel dailyBalance in await daily_balance_operations
-              .readDailyBalancesFromCsv('dailyBalances_kgb.csv'))
+          for (DailyBalanceModel dailyBalance in (await daily_balance_operations
+              .readDailyBalancesFromCsv('dailyBalances_kgb.csv')))
             dailyBalance.date: dailyBalance.balance
         }, constants.kgbMinimumBalance);
         // print(
@@ -112,6 +112,7 @@ void invokeForecast(
   do {
     print('Average Daily Balance : ${averageDailyBalanceWithSum.key}');
     print('1 : Forecast within minimum balance on same balance');
+    print('Required Minimum Daily Balance : $minimumBalance');
     print('2 : Forecast within minimum balance on altered balance');
     print('3 : Forecast for 5 days with same balance');
     print('4 : Forecast for 5 days with altered balance');
