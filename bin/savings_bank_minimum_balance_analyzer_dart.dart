@@ -8,7 +8,7 @@ import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operati
 import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_interactive.dart'
     as input_utils_interactive;
 import 'package:savings_bank_minimum_balance_analyzer_dart/models/daily_balance_model.dart';
-import 'package:sugar/collection.dart';
+import 'package:tuple/tuple.dart';
 
 void main(List<String> arguments) async {
   int choice;
@@ -105,12 +105,12 @@ void invokeGetAverageBalanceFromTransactionsJson(
 void invokeForecast(
     Map<DateTime, double> dailyBalances, double minimumBalance) {
   // Pair<averageDailyBalance, sumOfDailyBalances>
-  Pair<double, double> averageDailyBalanceWithSum = daily_balance_operations
+  Tuple2<double, double> averageDailyBalanceWithSum = daily_balance_operations
       .getAverageDailyBalanceAndSumFromDailyBalanceMap(dailyBalances);
 
   int choice2;
   do {
-    print('Average Daily Balance : ${averageDailyBalanceWithSum.key}');
+    print('Average Daily Balance : ${averageDailyBalanceWithSum.item1}');
     print('Required Minimum Daily Balance : $minimumBalance');
 
     print('1 : Forecast within minimum balance on same balance');
@@ -135,59 +135,59 @@ void invokeForecast(
     choice2 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice2) {
       case 1:
-        if (minimumBalance > averageDailyBalanceWithSum.key) {
+        if (minimumBalance > averageDailyBalanceWithSum.item1) {
           print('Required Minimum Balance not resolved yet...');
         } else {
           print('Forecast');
           print('----------');
           print(
-              '${daily_balance_operations.prepareForecastForSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key)}');
+              '${daily_balance_operations.prepareForecastForSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1)}');
         }
         break;
       case 2:
-        if (minimumBalance > averageDailyBalanceWithSum.key) {
+        if (minimumBalance > averageDailyBalanceWithSum.item1) {
           print('Required Minimum Balance not resolved yet...');
         } else {
           prepareForecastForAlteredBalance(
-              dailyBalances, minimumBalance, averageDailyBalanceWithSum.key);
+              dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1);
         }
         break;
       case 3:
         print('Forecast');
         print('----------');
         print(
-            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 5)}');
+            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 5)}');
         break;
       case 4:
         prepareForecastForAlteredBalance(
-            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
+            dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1,
             isForDays: true, forDays: 5);
         break;
       // case 5:
       //   break;
       case 6:
         print(
-            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 5)}');
+            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 5)}');
         break;
       case 7:
         prepareForecastForAlteredBalance(
-            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
+            dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1,
             isForDays: true, forDays: 10);
         break;
       case 8:
         prepareForecastForAlteredBalance(
-            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key,
+            dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1,
             isForDays: true, forDays: 15);
         break;
       case 9:
         print(
-            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
+            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 10)}');
         break;
       case 10:
         print('Forecast');
         print('----------');
         print(
-            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key, 10)}');
+            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 10)}');
         break;
       case 12:
         int lastDayOfMonth = Jiffy.now().daysInMonth;
@@ -195,7 +195,7 @@ void invokeForecast(
             'Forecast for ${lastDayOfMonth == 31 ? '31 / 30' : lastDayOfMonth} days');
         print('------------------------');
         print(
-            'Need to deposit ${((lastDayOfMonth == 31 ? 31 : lastDayOfMonth) * minimumBalance) - averageDailyBalanceWithSum.value}');
+            'Need to deposit ${((lastDayOfMonth == 31 ? 31 : lastDayOfMonth) * minimumBalance) - averageDailyBalanceWithSum.item2}');
         break;
       case 0:
         break;

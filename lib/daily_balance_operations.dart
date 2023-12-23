@@ -2,7 +2,7 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:grizzly_io/grizzly_io.dart';
-import 'package:sugar/collection.dart';
+import 'package:tuple/tuple.dart';
 
 import 'date_formats.dart' as date_formats;
 import 'models/daily_balance_model.dart';
@@ -67,7 +67,8 @@ List<TransactionModel> readTransactionsFromJson(String jsonPath) {
   return transactions;
 }
 
-Pair<transactions_with_last_balance_parser.LastBalance, List<TransactionModel>>
+Tuple2<transactions_with_last_balance_parser.LastBalance,
+        List<TransactionModel>>
     readTransactionsWithLastBalanceFromJson(String jsonPath) {
   transactions_with_last_balance_parser.TransactionsWithLastBalanceModel
       parsedTransactions =
@@ -82,7 +83,7 @@ Pair<transactions_with_last_balance_parser.LastBalance, List<TransactionModel>>
           amount: parsedTransactionAmount.toDouble()));
     }
   });
-  return Pair(parsedTransactions.lastBalance, transactions);
+  return Tuple2(parsedTransactions.lastBalance, transactions);
 }
 
 SplayTreeMap<DateTime, double> calculateDailyBalancesFromTransactions(
@@ -149,13 +150,13 @@ Map<DateTime, double> prepareTransactionSumsFromJson(String jsonPath) {
   return prepareTransactionSums(readTransactionsFromJson(jsonPath));
 }
 
-Pair<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
+Tuple2<transactions_with_last_balance_parser.LastBalance, Map<DateTime, double>>
     prepareTransactionSumsWithLastBalanceFromJson(String jsonPath) {
-  Pair<transactions_with_last_balance_parser.LastBalance,
+  Tuple2<transactions_with_last_balance_parser.LastBalance,
           List<TransactionModel>> transactionsWithLastBalance =
       readTransactionsWithLastBalanceFromJson(jsonPath);
-  return Pair(transactionsWithLastBalance.key,
-      prepareTransactionSums(transactionsWithLastBalance.value));
+  return Tuple2(transactionsWithLastBalance.item1,
+      prepareTransactionSums(transactionsWithLastBalance.item2));
 }
 
 Map<DateTime, double> prepareTransactionSums(
@@ -170,17 +171,18 @@ Map<DateTime, double> prepareTransactionSums(
   return transactionSums;
 }
 
-Pair<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
+Tuple2<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
     Map<DateTime, double> dailyBalances) {
   double sumOfDailyBalances = 0;
   dailyBalances.forEach((DateTime date, double dailyBalance) {
     sumOfDailyBalances += dailyBalance;
   });
-  return Pair(getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
+  return Tuple2(
+      getAverageDailyBalance(sumOfDailyBalances, dailyBalances.length),
       sumOfDailyBalances);
 }
 
-Map<DateTime, Quad<double, double, double, int>>
+Map<DateTime, Tuple4<double, double, double, int>>
     prepareForecastWithSolutionForOneTimeAlteredBalance(
         Map<DateTime, double> dailyBalances,
         double minimumBalance,
@@ -193,7 +195,8 @@ Map<DateTime, Quad<double, double, double, int>>
         int? forDays}) {
   bool isOneTimeNotOver = true;
 
-  Map<DateTime, Quad<double, double, double, int>> forecastResult = {};
+  // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
+  Map<DateTime, Tuple4<double, double, double, int>> forecastResult = {};
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -237,7 +240,7 @@ Map<DateTime, Quad<double, double, double, int>>
           (minimumBalance * noOfDays) - sumOfDailyBalancesForExtraOneDay;
     }
 
-    forecastResult[lastDay] = Quad(currentAverageDailyBalance, solutionAmount,
+    forecastResult[lastDay] = Tuple4(currentAverageDailyBalance, solutionAmount,
         sumOfDailyBalancesForExtraOneDay, noOfDays);
     dayCounter++;
   }
@@ -258,16 +261,16 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-Map<DateTime, Quad<double, double, double, int>> prepareForecastForSameBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance) {
+Map<DateTime, Tuple4<double, double, double, int>>
+    prepareForecastForSameBalance(Map<DateTime, double> dailyBalances,
+        double minimumBalance, double currentAverageDailyBalance) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false);
 }
 
-Map<DateTime, Quad<double, double, double, int>>
+// date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
+Map<DateTime, Tuple4<double, double, double, int>>
     prepareForecastForDaysWithSameBalance(Map<DateTime, double> dailyBalances,
         double minimumBalance, double currentAverageDailyBalance, int forDays) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
