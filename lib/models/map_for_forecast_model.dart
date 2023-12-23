@@ -28,10 +28,10 @@ class MapForForecastModel<K, V>
       MapEntry<DateTime, V> mapEntry = _map.entries.elementAt(i);
       if (i == 0) {
         result =
-            "$result(Date => ${normalDateFormat.format(mapEntry.key)}: ${mapEntry.value.toString()})";
+            "$result(Date => ${normalDateFormat.format(mapEntry.key)}: \n${mapEntry.value.toString()})";
       } else {
         result =
-            "$result, (Date => ${normalDateFormat.format(mapEntry.key)}: ${mapEntry.value.toString()})";
+            "$result, \n(Date => ${normalDateFormat.format(mapEntry.key)}: \n${mapEntry.value.toString()})";
       }
     }
     return '$result}';

@@ -125,9 +125,11 @@ void invokeForecast(
     // print(
     //     '11 : Forecast for 10 days [with altered balance & one time resolve (including repaying within minimum balance)]');
     print(
-        '12 : Forecast up-to month end [with same balance, one time resolve & next moment withdraw of resolve amount]');
+        '12 : Forecast up-to month end [with same balance, one time resolve & next day withdraw of resolve amount]');
     // print(
     //     '13 : Forecast up-to month end [with altered balance, one time resolve & next moment withdraw of resolve amount]');
+    // print(
+    //     '14 : Forecast up-to month end [with same balance, one time resolve & specify day withdraw of resolve amount]');
     print('0 : Exit');
     choice2 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice2) {
@@ -159,8 +161,8 @@ void invokeForecast(
             isForDays: true, forDays: 5);
         break;
       case 6:
-        print(
-            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 5)}');
+        printForecastWithSameBalanceAndOneTimeResolveWithRepayForForXDays(
+            dailyBalances, averageDailyBalanceWithSum, minimumBalance, 5);
         break;
       case 7:
         prepareForecastForAlteredBalance(
@@ -173,20 +175,29 @@ void invokeForecast(
             isForDays: true, forDays: 15);
         break;
       case 9:
-        print(
-            '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 10)}');
+        printForecastWithSameBalanceAndOneTimeResolveWithRepayForForXDays(
+            dailyBalances, averageDailyBalanceWithSum, minimumBalance, 10);
         break;
       case 10:
         printForecastWithSameBalanceForXDay(
             dailyBalances, averageDailyBalanceWithSum, minimumBalance, 10);
         break;
       case 12:
+        printInitialValues(
+            dailyBalances, averageDailyBalanceWithSum, minimumBalance);
         int lastDayOfMonth = Jiffy.now().daysInMonth;
         print(
             'Forecast for ${lastDayOfMonth == 31 ? '31 / 30' : lastDayOfMonth} days');
         print('------------------------');
+        double toPayAmount =
+            ((lastDayOfMonth == 31 ? 31 : lastDayOfMonth) * minimumBalance) -
+                averageDailyBalanceWithSum.item2;
+        DateTime nextDayDate = dailyBalances.keys.last.add(Duration(days: 1));
         print(
-            'Need to deposit ${((lastDayOfMonth == 31 ? 31 : lastDayOfMonth) * minimumBalance) - averageDailyBalanceWithSum.item2}');
+            'Need to deposit ((${lastDayOfMonth == 31 ? 31 : lastDayOfMonth} * $minimumBalance) - ${averageDailyBalanceWithSum.item2}) = $toPayAmount On ${normalDateFormat.format(nextDayDate)}');
+        double lastDayDailyBalance = dailyBalances.values.last;
+        print(
+            'Can withdraw ${toPayAmount + lastDayDailyBalance} on ${normalDateFormat.format(nextDayDate.add(Duration(days: 1)))}, advantageAmount => $lastDayDailyBalance');
         break;
       case 0:
         break;
@@ -196,22 +207,48 @@ void invokeForecast(
   } while (choice2 != 0);
 }
 
+void printForecastWithSameBalanceAndOneTimeResolveWithRepayForForXDays(
+    Map<DateTime, double> dailyBalances,
+    Tuple2<double, double> averageDailyBalanceWithSum,
+    double minimumBalance,
+    int noOfDays) {
+  printInitialValues(dailyBalances, averageDailyBalanceWithSum, minimumBalance);
+  print('Forecast');
+  print('------------------------');
+  print(
+      '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, noOfDays)}');
+}
+
 void printForecastWithSameBalanceForXDay(
   Map<DateTime, double> dailyBalances,
   Tuple2<double, double> averageDailyBalanceWithSum,
   double minimumBalance,
   int noOfDays,
 ) {
+  printInitialValues(dailyBalances, averageDailyBalanceWithSum, minimumBalance);
   print('Forecast');
+  print('------------------------');
+  print(
+      '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, noOfDays)}');
+}
+
+void printInitialValues(Map<DateTime, double> dailyBalances,
+    Tuple2<double, double> averageDailyBalanceWithSum, double minimumBalance) {
+  print('Initial Values');
   print('----------');
+
+  print('Current Average Daily Balance : ${averageDailyBalanceWithSum.item1}');
+  print('Required Minimum Daily Balance : $minimumBalance');
+
+  DateTime lastDateInDailyBalances = dailyBalances.entries.last.key;
   String lastDateInDailyBalancesAsText =
-      normalDateFormat.format(dailyBalances.entries.last.key);
+      normalDateFormat.format(lastDateInDailyBalances);
   print(
       'Current Balance on $lastDateInDailyBalancesAsText => ${dailyBalances.entries.last.value}');
   print(
       'Sum of Daily Balances on $lastDateInDailyBalancesAsText => ${averageDailyBalanceWithSum.item2}');
-  print(
-      '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, noOfDays)}');
+
+  print('Current No. of Days : ${lastDateInDailyBalances.day}');
 }
 
 void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
