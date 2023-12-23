@@ -1,13 +1,42 @@
 import 'package:tuple/tuple.dart';
 
-class Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<T1, T2, T3, T4>
+class Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<T1, T2, T3, T4>
     extends Tuple4 {
-  //[currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-  Tuple4ForForecastWithSolutionForOneTimeAlteredBalance(
-      super.item1, super.item2, super.item3, super.item4);
+  final double currentAverageDailyBalance;
+  final double solutionAmount;
+  final double sumOfDailyBalances;
+  final int noOfDays;
+
+  Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel(
+      this.currentAverageDailyBalance,
+      this.solutionAmount,
+      this.sumOfDailyBalances,
+      this.noOfDays)
+      : super(currentAverageDailyBalance, solutionAmount, sumOfDailyBalances,
+            noOfDays);
 
   @override
   String toString() {
-    return '[currentAverageDailyBalance => $item1, solutionAmount => $item2, sumOfDailyBalances => $item3, noOfDays => $item4]';
+    return '[currentAverageDailyBalance => $currentAverageDailyBalance, solutionAmount => $solutionAmount, sumOfDailyBalances => $sumOfDailyBalances, noOfDays => $noOfDays]';
+  }
+}
+
+class Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel<T1, T2, T3,
+    T4> extends Tuple4 {
+  final double currentAverageDailyBalance;
+  final double solutionAmount;
+  final double repayAmount;
+  final int dummy;
+
+  Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+      this.currentAverageDailyBalance,
+      this.solutionAmount,
+      this.repayAmount,
+      this.dummy)
+      : super(currentAverageDailyBalance, solutionAmount, repayAmount, dummy);
+
+  @override
+  String toString() {
+    return '[currentAverageDailyBalance => $currentAverageDailyBalance, solutionAmount => $solutionAmount, repayAmount => $repayAmount, dummy => $dummy]';
   }
 }
