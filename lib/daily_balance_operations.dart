@@ -184,27 +184,24 @@ Tuple2<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
       sumOfDailyBalances);
 }
 
-MapForForecastModel<
-    DateTime,
-    Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<double, double,
-        double, int>> prepareForecastWithSolutionForOneTimeAlteredBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance,
-    double lastBalance,
-    {bool isNotSameAmount = true,
-    bool isNotTimedOperation = true,
-    DateTime? eventDate,
-    bool isForDays = false,
-    int? forDays}) {
+MapForForecastModel<DateTime,
+        Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+    prepareForecastWithSolutionForOneTimeAlteredBalance(
+        Map<DateTime, double> dailyBalances,
+        double minimumBalance,
+        double currentAverageDailyBalance,
+        double lastBalance,
+        {bool isNotSameAmount = true,
+        bool isNotTimedOperation = true,
+        DateTime? eventDate,
+        bool isForDays = false,
+        int? forDays}) {
   bool isOneTimeNotOver = true;
 
   // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-  MapForForecastModel<
-          DateTime,
-          Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<double, double,
-              double, int>> forecastResult =
-      MapForForecastModel();
+  MapForForecastModel<DateTime,
+          Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+      forecastResult = MapForForecastModel();
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -273,27 +270,20 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-MapForForecastModel<
-    DateTime,
-    Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<double, double,
-        double, int>> prepareForecastForSameBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance) {
+MapForForecastModel<DateTime,
+        Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+    prepareForecastForSameBalance(Map<DateTime, double> dailyBalances,
+        double minimumBalance, double currentAverageDailyBalance) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false);
 }
 
 // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-MapForForecastModel<
-    DateTime,
-    Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<double, double,
-        double, int>> prepareForecastForDaysWithSameBalance(
-    Map<DateTime, double> dailyBalances,
-    double minimumBalance,
-    double currentAverageDailyBalance,
-    int forDays) {
+MapForForecastModel<DateTime,
+        Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+    prepareForecastForDaysWithSameBalance(Map<DateTime, double> dailyBalances,
+        double minimumBalance, double currentAverageDailyBalance, int forDays) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false, isForDays: true, forDays: forDays);

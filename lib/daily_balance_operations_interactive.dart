@@ -72,33 +72,24 @@ SplayTreeMap<DateTime, double>
       transactionSumsWithLastBalance.item2);
 }
 
-MapForForecastModel<
-    DateTime,
-    Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel<
-        double,
-        double,
-        double,
-        double>> prepareForecastForDaysWithSameBalanceAndOneTimeResolve(
+MapForForecastModel<DateTime,
+        Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel>
+    prepareForecastForDaysWithSameBalanceAndOneTimeResolve(
   Map<DateTime, double> dailyBalances,
   double minimumBalance,
   double currentAverageDailyBalance,
   int forDays,
 ) {
   // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalances, noOfDays]
-  MapForForecastModel<
-          DateTime,
-          Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<double,
-              double, double, int>> forecastResult =
+  MapForForecastModel<DateTime,
+          Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+      forecastResult =
       daily_balance_operations.prepareForecastForDaysWithSameBalance(
           dailyBalances, minimumBalance, currentAverageDailyBalance, forDays);
-  // date => [currentAverageDailyBalance, solutionAmount, repayAmount, dummy]
-  MapForForecastModel<
-      DateTime,
-      Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel<
-          double,
-          double,
-          double,
-          double>> forecastResultWithRepay = MapForForecastModel();
+  // date => [currentAverageDailyBalance, solutionAmount, repayAmount, paidAmount, advantageAmount]
+  MapForForecastModel<DateTime,
+          Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel>
+      forecastResultWithRepay = MapForForecastModel();
   bool isOneTimeResolveIsNotOver = true;
   double oneTimeResolveAmount = 0;
   double previousDailyBalancesSum = 0;
@@ -110,39 +101,44 @@ MapForForecastModel<
         String? solutionPayInput = stdin.readLineSync();
         if (solutionPayInput == "") {
           forecastResultWithRepay[date] =
-              Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+              Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
                   forecastResult[date]!.currentAverageDailyBalance,
                   forecastResult[date]!.solutionAmount,
                   0,
+                  forecastResult[date]!.solutionAmount,
                   0);
           isOneTimeResolveIsNotOver = false;
           oneTimeResolveAmount = forecastResult[date]!.solutionAmount;
           previousDailyBalancesSum = forecastResult[date]!.sumOfDailyBalances;
         } else {
           forecastResultWithRepay[date] =
-              Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+              Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
                   forecastResult[date]!.currentAverageDailyBalance,
                   forecastResult[date]!.solutionAmount,
+                  0,
                   0,
                   0);
         }
       } else {
+        double repayAmount = ((forecastResult[date]!.sumOfDailyBalances -
+                    previousDailyBalancesSum) +
+                oneTimeResolveAmount) -
+            minimumBalance;
         forecastResultWithRepay[date] =
-            Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+            Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
                 minimumBalance,
                 0,
-                ((forecastResult[date]!.sumOfDailyBalances -
-                            previousDailyBalancesSum) +
-                        oneTimeResolveAmount) -
-                    minimumBalance,
-                0);
+                repayAmount,
+                0,
+                (repayAmount - oneTimeResolveAmount));
         break;
       }
     } else {
       forecastResultWithRepay[date] =
-          Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+          Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
               forecastResult[date]!.currentAverageDailyBalance,
               forecastResult[date]!.solutionAmount,
+              0,
               0,
               0);
     }

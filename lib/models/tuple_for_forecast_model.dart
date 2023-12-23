@@ -1,6 +1,6 @@
 import 'package:tuple/tuple.dart';
 
-class Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<T1, T2, T3, T4>
+class Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel
     extends Tuple4 {
   final double currentAverageDailyBalance;
   final double solutionAmount;
@@ -21,22 +21,25 @@ class Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel<T1, T2, T3, T4>
   }
 }
 
-class Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel<T1, T2, T3,
-    T4> extends Tuple4 {
+class Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel
+    extends Tuple5 {
   final double currentAverageDailyBalance;
   final double solutionAmount;
   final double repayAmount;
-  final int dummy;
+  final double paidAmount;
+  final double advantageAmount;
 
-  Tuple4ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+  Tuple5ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
       this.currentAverageDailyBalance,
       this.solutionAmount,
       this.repayAmount,
-      this.dummy)
-      : super(currentAverageDailyBalance, solutionAmount, repayAmount, dummy);
+      this.paidAmount,
+      this.advantageAmount)
+      : super(currentAverageDailyBalance, solutionAmount, repayAmount,
+            paidAmount, advantageAmount);
 
   @override
   String toString() {
-    return '[currentAverageDailyBalance => $currentAverageDailyBalance, solutionAmount => $solutionAmount, repayAmount => $repayAmount, dummy => $dummy]';
+    return '[currentAverageDailyBalance => $currentAverageDailyBalance, solutionAmount => $solutionAmount, repayAmount => $repayAmount, paidAmount => $paidAmount, advantageAmount => $advantageAmount]';
   }
 }
