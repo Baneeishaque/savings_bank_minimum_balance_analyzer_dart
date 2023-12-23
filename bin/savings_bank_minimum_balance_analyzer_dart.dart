@@ -135,14 +135,22 @@ void invokeForecast(
     choice2 = input_utils_interactive.getValidIntCli('Enter you choice : ');
     switch (choice2) {
       case 1:
-        print('Forecast');
-        print('----------');
-        print(
-            '${daily_balance_operations.prepareForecastForSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key)}');
+        if (minimumBalance > averageDailyBalanceWithSum.key) {
+          print('Required Minimum Balance not resolved yet...');
+        } else {
+          print('Forecast');
+          print('----------');
+          print(
+              '${daily_balance_operations.prepareForecastForSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.key)}');
+        }
         break;
       case 2:
-        prepareForecastForAlteredBalance(
-            dailyBalances, minimumBalance, averageDailyBalanceWithSum.key);
+        if (minimumBalance > averageDailyBalanceWithSum.key) {
+          print('Required Minimum Balance not resolved yet...');
+        } else {
+          prepareForecastForAlteredBalance(
+              dailyBalances, minimumBalance, averageDailyBalanceWithSum.key);
+        }
         break;
       case 3:
         print('Forecast');
