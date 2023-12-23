@@ -47,10 +47,6 @@ void main(List<String> arguments) async {
             dailyBalance.date: dailyBalance.balance
         }, constants.pnbMinimumBalance);
         break;
-      // case 4:
-      //   // await invokeGetAverageBalanceFromTransactionsCsv(
-      //   //     'transactions_pnb.csv', constants.pnbMinimumBalance);
-      //   break;
       case 5:
         invokeGetAverageBalanceFromTransactionsJson(
             'transactions_kgb.json', constants.kgbMinimumBalance);
@@ -228,8 +224,6 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
               '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount)}');
         }
         break;
-      // case 2:
-      //   break;
       case 3:
         double amount =
             input_utils_interactive.getValidDoubleCli('Enter amount : ');
@@ -243,8 +237,6 @@ void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
               '${daily_balance_operations.prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances, minimumBalance, currentAverageDailyBalance, 0 - amount, isNotTimedOperation: false, eventDate: input_utils_interactive.getValidNormalGreaterDateCli(dailyBalances.keys.last))}');
         }
         break;
-      // case 4:
-      //   break;
       case 0:
         break;
       default:
