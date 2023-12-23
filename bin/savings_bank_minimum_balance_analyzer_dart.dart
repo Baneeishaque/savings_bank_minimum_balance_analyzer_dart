@@ -5,6 +5,7 @@ import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operati
     as daily_balance_operations;
 import 'package:savings_bank_minimum_balance_analyzer_dart/daily_balance_operations_interactive.dart'
     as daily_balance_operations_interactive;
+import 'package:savings_bank_minimum_balance_analyzer_dart/date_formats.dart';
 import 'package:savings_bank_minimum_balance_analyzer_dart/input_utils_interactive.dart'
     as input_utils_interactive;
 import 'package:savings_bank_minimum_balance_analyzer_dart/models/daily_balance_model.dart';
@@ -149,10 +150,8 @@ void invokeForecast(
         }
         break;
       case 3:
-        print('Forecast');
-        print('----------');
-        print(
-            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 5)}');
+        printForecastWithSameBalanceForXDay(
+            dailyBalances, averageDailyBalanceWithSum, minimumBalance, 5);
         break;
       case 4:
         prepareForecastForAlteredBalance(
@@ -178,10 +177,8 @@ void invokeForecast(
             '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 10)}');
         break;
       case 10:
-        print('Forecast');
-        print('----------');
-        print(
-            '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 10)}');
+        printForecastWithSameBalanceForXDay(
+            dailyBalances, averageDailyBalanceWithSum, minimumBalance, 10);
         break;
       case 12:
         int lastDayOfMonth = Jiffy.now().daysInMonth;
@@ -197,6 +194,24 @@ void invokeForecast(
         print('Invalid Option, Try again...');
     }
   } while (choice2 != 0);
+}
+
+void printForecastWithSameBalanceForXDay(
+  Map<DateTime, double> dailyBalances,
+  Tuple2<double, double> averageDailyBalanceWithSum,
+  double minimumBalance,
+  int noOfDays,
+) {
+  print('Forecast');
+  print('----------');
+  String lastDateInDailyBalancesAsText =
+      normalDateFormat.format(dailyBalances.entries.last.key);
+  print(
+      'Current Balance on $lastDateInDailyBalancesAsText => ${dailyBalances.entries.last.value}');
+  print(
+      'Sum of Daily Balances on $lastDateInDailyBalancesAsText => ${averageDailyBalanceWithSum.item2}');
+  print(
+      '${daily_balance_operations.prepareForecastForDaysWithSameBalance(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, noOfDays)}');
 }
 
 void prepareForecastForAlteredBalance(Map<DateTime, double> dailyBalances,
