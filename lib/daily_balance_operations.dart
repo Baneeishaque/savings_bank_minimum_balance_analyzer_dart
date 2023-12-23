@@ -2,6 +2,8 @@ import 'dart:collection';
 import 'dart:io';
 
 import 'package:grizzly_io/grizzly_io.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/map_for_forecast_model.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/tuple_for_forecast_model.dart';
 import 'package:tuple/tuple.dart';
 
 import 'date_formats.dart' as date_formats;
@@ -182,21 +184,27 @@ Tuple2<double, double> getAverageDailyBalanceAndSumFromDailyBalanceMap(
       sumOfDailyBalances);
 }
 
-Map<DateTime, Tuple4<double, double, double, int>>
-    prepareForecastWithSolutionForOneTimeAlteredBalance(
-        Map<DateTime, double> dailyBalances,
-        double minimumBalance,
-        double currentAverageDailyBalance,
-        double lastBalance,
-        {bool isNotSameAmount = true,
-        bool isNotTimedOperation = true,
-        DateTime? eventDate,
-        bool isForDays = false,
-        int? forDays}) {
+MapForForecastWithSolutionForOneTimeAlteredBalance<
+    DateTime,
+    Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<double, double,
+        double, int>> prepareForecastWithSolutionForOneTimeAlteredBalance(
+    Map<DateTime, double> dailyBalances,
+    double minimumBalance,
+    double currentAverageDailyBalance,
+    double lastBalance,
+    {bool isNotSameAmount = true,
+    bool isNotTimedOperation = true,
+    DateTime? eventDate,
+    bool isForDays = false,
+    int? forDays}) {
   bool isOneTimeNotOver = true;
 
   // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-  Map<DateTime, Tuple4<double, double, double, int>> forecastResult = {};
+  MapForForecastWithSolutionForOneTimeAlteredBalance<
+          DateTime,
+          Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<double, double,
+              double, int>> forecastResult =
+      MapForForecastWithSolutionForOneTimeAlteredBalance();
 
   DateTime lastDay = dailyBalances.keys.last;
   int noOfDays = dailyBalances.length;
@@ -240,8 +248,12 @@ Map<DateTime, Tuple4<double, double, double, int>>
           (minimumBalance * noOfDays) - sumOfDailyBalancesForExtraOneDay;
     }
 
-    forecastResult[lastDay] = Tuple4(currentAverageDailyBalance, solutionAmount,
-        sumOfDailyBalancesForExtraOneDay, noOfDays);
+    forecastResult[lastDay] =
+        Tuple4ForForecastWithSolutionForOneTimeAlteredBalance(
+            currentAverageDailyBalance,
+            solutionAmount,
+            sumOfDailyBalancesForExtraOneDay,
+            noOfDays);
     dayCounter++;
   }
   return forecastResult;
@@ -261,18 +273,27 @@ bool checkLoopCriteria(double currentAverageDailyBalance, double minimumBalance,
   }
 }
 
-Map<DateTime, Tuple4<double, double, double, int>>
-    prepareForecastForSameBalance(Map<DateTime, double> dailyBalances,
-        double minimumBalance, double currentAverageDailyBalance) {
+MapForForecastWithSolutionForOneTimeAlteredBalance<
+    DateTime,
+    Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<double, double,
+        double, int>> prepareForecastForSameBalance(
+    Map<DateTime, double> dailyBalances,
+    double minimumBalance,
+    double currentAverageDailyBalance) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false);
 }
 
 // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-Map<DateTime, Tuple4<double, double, double, int>>
-    prepareForecastForDaysWithSameBalance(Map<DateTime, double> dailyBalances,
-        double minimumBalance, double currentAverageDailyBalance, int forDays) {
+MapForForecastWithSolutionForOneTimeAlteredBalance<
+    DateTime,
+    Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<double, double,
+        double, int>> prepareForecastForDaysWithSameBalance(
+    Map<DateTime, double> dailyBalances,
+    double minimumBalance,
+    double currentAverageDailyBalance,
+    int forDays) {
   return prepareForecastWithSolutionForOneTimeAlteredBalance(dailyBalances,
       minimumBalance, currentAverageDailyBalance, dailyBalances.values.last,
       isNotSameAmount: false, isForDays: true, forDays: forDays);

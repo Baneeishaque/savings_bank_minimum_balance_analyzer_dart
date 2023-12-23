@@ -1,6 +1,8 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/map_for_forecast_model.dart';
+import 'package:savings_bank_minimum_balance_analyzer_dart/models/tuple_for_forecast_model.dart';
 import 'package:tuple/tuple.dart';
 
 import 'daily_balance_operations.dart' as daily_balance_operations;
@@ -77,7 +79,10 @@ Map<DateTime, Tuple4<double, double, double, double>>
         double currentAverageDailyBalance,
         int forDays) {
   // date => [currentAverageDailyBalance, solutionAmount, sumOfDailyBalancesForExtraOneDay, noOfDays]
-  Map<DateTime, Tuple4<double, double, double, int>> forecastResult =
+  MapForForecastWithSolutionForOneTimeAlteredBalance<
+          DateTime,
+          Tuple4ForForecastWithSolutionForOneTimeAlteredBalance<double, double,
+              double, int>> forecastResult =
       daily_balance_operations.prepareForecastForDaysWithSameBalance(
           dailyBalances, minimumBalance, currentAverageDailyBalance, forDays);
   // date => [currentAverageDailyBalance, solutionAmount
