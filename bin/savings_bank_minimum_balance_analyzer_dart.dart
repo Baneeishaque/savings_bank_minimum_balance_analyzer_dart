@@ -163,8 +163,6 @@ void invokeForecast(
             dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1,
             isForDays: true, forDays: 5);
         break;
-      // case 5:
-      //   break;
       case 6:
         print(
             '${daily_balance_operations_interactive.prepareForecastForDaysWithSameBalanceAndOneTimeResolve(dailyBalances, minimumBalance, averageDailyBalanceWithSum.item1, 5)}');
