@@ -127,30 +127,70 @@ MapForForecastModel<DateTime,
                   forecastResult[date]!.noOfDays);
         }
       } else {
-        double repayAmount =
-            (dailyBalances.values.last + oneTimeResolveAmount) - minimumBalance;
-        forecastResultWithRepay[date] =
-            Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
-                minimumBalance,
-                0,
-                repayAmount,
-                0,
-                (repayAmount - oneTimeResolveAmount),
-                previousDailyBalancesSum + minimumBalance,
-                forecastResult[date]!.noOfDays);
+        forecastResultWithRepay = oneTimeResolveOverActions(
+          dailyBalances,
+          oneTimeResolveAmount,
+          minimumBalance,
+          forecastResultWithRepay,
+          date,
+          previousDailyBalancesSum,
+          forecastResult,
+        );
         break;
       }
     } else {
-      forecastResultWithRepay[date] =
-          Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
-              forecastResult[date]!.currentAverageDailyBalance,
-              forecastResult[date]!.solutionAmount,
-              0,
-              0,
-              0,
-              forecastResult[date]!.sumOfDailyBalances,
-              forecastResult[date]!.noOfDays);
+      if (isOneTimeResolveIsNotOver) {
+        forecastResultWithRepay[date] =
+            Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+                forecastResult[date]!.currentAverageDailyBalance,
+                forecastResult[date]!.solutionAmount,
+                0,
+                0,
+                0,
+                forecastResult[date]!.sumOfDailyBalances,
+                forecastResult[date]!.noOfDays);
+      } else {
+        forecastResultWithRepay = oneTimeResolveOverActions(
+          dailyBalances,
+          oneTimeResolveAmount,
+          minimumBalance,
+          forecastResultWithRepay,
+          date,
+          previousDailyBalancesSum,
+          forecastResult,
+        );
+        break;
+      }
     }
   }
+  return forecastResultWithRepay;
+}
+
+MapForForecastModel<DateTime,
+        Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel>
+    oneTimeResolveOverActions(
+  Map<DateTime, double> dailyBalances,
+  double oneTimeResolveAmount,
+  double minimumBalance,
+  MapForForecastModel<DateTime,
+          Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel>
+      forecastResultWithRepay,
+  DateTime date,
+  double previousDailyBalancesSum,
+  MapForForecastModel<DateTime,
+          Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel>
+      forecastResult,
+) {
+  double repayAmount =
+      (dailyBalances.values.last + oneTimeResolveAmount) - minimumBalance;
+  forecastResultWithRepay[date] =
+      Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel(
+          minimumBalance,
+          0,
+          repayAmount,
+          0,
+          (repayAmount - oneTimeResolveAmount),
+          previousDailyBalancesSum + minimumBalance,
+          forecastResult[date]!.noOfDays);
   return forecastResultWithRepay;
 }
