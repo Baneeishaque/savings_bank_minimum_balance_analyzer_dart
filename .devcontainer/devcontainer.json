@@ -1,0 +1,10 @@
+{
+  "name": "Dart Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers-community/features/dart-sdk": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "dart --version"
+}
