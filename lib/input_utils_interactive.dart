@@ -35,7 +35,9 @@ int getValidIntCli(String prompt) {
 }
 
 double getValidDoubleWithCustomInputsCli(
-    String prompt, Map<String, double> customInputs) {
+  String prompt,
+  Map<String, double> customInputs,
+) {
   print(prompt);
   String? doubleInText = stdin.readLineSync();
   if (doubleInText == null) {
@@ -55,7 +57,9 @@ double getValidDoubleWithCustomInputsCli(
 }
 
 String getValidStringWithCustomInputsCli(
-    String prompt, List<String> customInputs) {
+  String prompt,
+  List<String> customInputs,
+) {
   print(prompt);
   String? inputText = stdin.readLineSync();
   if (inputText == null) {

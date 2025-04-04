@@ -2,10 +2,7 @@ class DailyBalanceModel {
   DateTime date = DateTime.now();
   double balance = 0;
 
-  DailyBalanceModel({
-    required this.date,
-    required this.balance,
-  });
+  DailyBalanceModel({required this.date, required this.balance});
 
   @override
   bool operator ==(Object other) =>
@@ -23,10 +20,7 @@ class DailyBalanceModel {
     return 'DailyBalance{ date: $date, balance: $balance,}';
   }
 
-  DailyBalanceModel copyWith({
-    DateTime? date,
-    double? balance,
-  }) {
+  DailyBalanceModel copyWith({DateTime? date, double? balance}) {
     return DailyBalanceModel(
       date: date ?? this.date,
       balance: balance ?? this.balance,
@@ -34,10 +28,7 @@ class DailyBalanceModel {
   }
 
   Map<String, dynamic> toMap() {
-    return {
-      'date': date,
-      'balance': balance,
-    };
+    return {'date': date, 'balance': balance};
   }
 
   factory DailyBalanceModel.fromMap(Map<String, dynamic> map) {

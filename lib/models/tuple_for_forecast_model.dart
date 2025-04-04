@@ -12,8 +12,12 @@ class Tuple4ForForecastWithSolutionForOneTimeAlteredBalanceModel
     this.solutionAmount,
     this.sumOfDailyBalances,
     this.noOfDays,
-  ) : super(currentAverageDailyBalance, solutionAmount, sumOfDailyBalances,
-            noOfDays);
+  ) : super(
+        currentAverageDailyBalance,
+        solutionAmount,
+        sumOfDailyBalances,
+        noOfDays,
+      );
 
   @override
   String toString() {
@@ -39,8 +43,15 @@ class Tuple7ForForecastForDaysWithSameBalanceAndOneTimeResolveModel
     this.advantageAmount,
     this.sumOfDailyBalances,
     this.noOfDays,
-  ) : super(currentAverageDailyBalance, solutionAmount, repayAmount, paidAmount,
-            advantageAmount, sumOfDailyBalances, noOfDays);
+  ) : super(
+        currentAverageDailyBalance,
+        solutionAmount,
+        repayAmount,
+        paidAmount,
+        advantageAmount,
+        sumOfDailyBalances,
+        noOfDays,
+      );
 
   @override
   String toString() {

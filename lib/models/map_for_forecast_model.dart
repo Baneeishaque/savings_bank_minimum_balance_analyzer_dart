@@ -2,8 +2,7 @@ import 'dart:collection';
 
 import 'package:savings_bank_minimum_balance_analyzer_dart/date_formats.dart';
 
-class MapForForecastModel<K, V>
-    extends MapBase<DateTime, V> {
+class MapForForecastModel<K, V> extends MapBase<DateTime, V> {
   final Map<DateTime, V> _map = LinkedHashMap<DateTime, V>.identity();
 
   @override
