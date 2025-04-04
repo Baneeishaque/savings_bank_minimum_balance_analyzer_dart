@@ -119,7 +119,7 @@ packages:
       path: "."
       ref: HEAD
       resolved-ref: "633f75be9e984035a594ce28ef9b7c17309c4880"
-      url: "https://github.com/Baneeishaque/grizzly_io.git"
+      url: "https://github.com/Grizzly-dart/grizzly_io.git"
     source: git
     version: "4.0.0"
   http_multi_server:
