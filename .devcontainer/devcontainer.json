@@ -6,5 +6,5 @@
       "version": "latest"
     }
   },
-  "postCreateCommand": "mise --version"
+  "postCreateCommand": "mise trust --yes && mise install"
 }
