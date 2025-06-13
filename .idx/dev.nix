@@ -13,6 +13,7 @@
       "hverlin.mise-vscode"
       "tamasfe.even-better-toml"
       "FittenTech.Fitten-Code"
+      "mechatroner.rainbow-csv"
     ];
 
     previews = {
