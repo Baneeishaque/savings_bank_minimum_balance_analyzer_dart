@@ -1,8 +1,12 @@
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - '**'
+      - '!renovate/*'
   pull_request:
-    branches: [ "master" ]
+    branches:
+      - '**'
+      - '!renovate/*'
 
 jobs:
   build:
