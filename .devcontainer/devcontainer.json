@@ -1,0 +1,10 @@
+{
+  "name": "Dart Dev Container",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/devcontainers-extra/features/mise:1": {
+      "version": "latest"
+    }
+  },
+  "postCreateCommand": "mise --version"
+}
