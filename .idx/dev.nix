@@ -3,6 +3,7 @@
 
   packages = [
     pkgs.mise
+    pkgs.util-linux
   ];
 
   env = {};
