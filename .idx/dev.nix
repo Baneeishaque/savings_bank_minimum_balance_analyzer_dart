@@ -11,6 +11,7 @@
       "Dart-Code.dart-code"
       "hverlin.mise-vscode"
       "tamasfe.even-better-toml"
+      "FittenTech.Fitten-Code"
     ];
 
     previews = {
