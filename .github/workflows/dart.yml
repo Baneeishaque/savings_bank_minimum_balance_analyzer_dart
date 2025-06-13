@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Setup mise
-        uses: jdxcode/mise-action@v2
+        uses: jdx/mise-action@v2
 
       - name: Install dependencies
         run: mise exec -- dart pub get
