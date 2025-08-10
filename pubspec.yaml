@@ -9,7 +9,7 @@ environment:
 dependencies:
   grizzly_io:
     git: https://github.com/Grizzly-dart/grizzly_io.git
-  jiffy: 6.2.1
+  jiffy: 6.4.3
   tuple: 2.0.2
   intl: 0.18.1
 
