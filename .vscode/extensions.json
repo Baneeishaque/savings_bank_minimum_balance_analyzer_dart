@@ -40,7 +40,7 @@
     "chunsen.bracket-select",
     "circlecodesolution.ccs-flutter-color",
     "dart-code.dart-code",
-    "davidAnson.vscode-markdownlint",
+    "davidanson.vscode-markdownlint",
     "donjayamanne.githistory",
     "eamodio.gitlens",
     "everlastengineering.debug-in-titlebar",
@@ -94,7 +94,7 @@
     "yzane.markdown-pdf",
     "yzhang.markdown-all-in-one",
     "zaaack.markdown-editor",
-    "zainChen.json"
+    "zainchen.json"
   ],
   "recommendationsFromGitHub": [],
   "vscodeAlternativeRecommendations": [
