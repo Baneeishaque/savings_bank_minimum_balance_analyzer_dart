@@ -1,22 +1,22 @@
 {
   "additionalRecommendations": [
-    "continue.continue",
-    "foxundermoon.shell-format",
-    "gocodeo.gocodeo",
-    "google.geminicodeassist",
-    "kodu-ai.claude-dev-experimental",
-    "sindujaramaraj.app-developer-copilot",
-    "sixth.sixth-ai",
-    "taichikubo.dired-plus",
     "actionforge.actionforge",
     "alphaxek.github-actions-locally",
+    "continue.continue",
+    "gocodeo.gocodeo",
+    "google.geminicodeassist",
     "jwevans.jwe-markdown-enhanced",
+    "kodu-ai.claude-dev-experimental",
     "mushan.vscode-paste-image",
     "nur-srijan.markdown-rich-preview",
-    "shd101wyy.markdown-preview-enhanced"
+    "shd101wyy.markdown-preview-enhanced",
+    "sindujaramaraj.app-developer-copilot",
+    "sixth.sixth-ai",
+    "taichikubo.dired-plus"
   ],
   "gitpodAlternativeRecommendations": [
     "fittentech.fitten-code",
+    "ms-azuretools.vscode-containers",
     "nick-rudenko.back-n-forth",
     "vscode.github-authentication"
   ],
@@ -24,6 +24,7 @@
     "quentinguidee.gitignore-ultimate"
   ],
   "onlyGitpodSupported": [
+    "lang2hong.githd",
     "solomonkinard.git-files"
   ],
   "onlyVscodeSupported": [
@@ -35,6 +36,7 @@
     "aaron-bond.better-comments",
     "alefragnani.bookmarks",
     "andrijarubelj.flutterpubopen",
+    "beaglefoot.awk-ide-vscode",
     "bierner.markdown-preview-github-styles",
     "britesnow.vscode-toggle-quotes",
     "chunsen.bracket-select",
@@ -52,8 +54,11 @@
     "huizhou.githd",
     "hverlin.mise-vscode",
     "jakob101.relativepath",
+    "jannek-aalto.shell-function-outline",
+    "jq-syntax-highlighting.jq-syntax-highlighting",
     "lacroixdavid1.vscode-format-context-menu",
     "leodevbro.blockman",
+    "mads-hartmann.bash-ide-vscode",
     "mhutchie.git-graph",
     "moshfeu.compare-folders",
     "moshfeu.diff-merge",
@@ -65,6 +70,7 @@
     "pkief.material-icon-theme",
     "qcz.text-power-tools",
     "redhat.vscode-yaml",
+    "rogalmic.bash-debug",
     "roscop.activefileinstatusbar",
     "ryu1kn.partial-diff",
     "sanjulaganepola.github-local-actions",
@@ -74,6 +80,7 @@
     "sysoev.vscode-open-in-github",
     "takkao.open-window-tab-context",
     "tamasfe.even-better-toml",
+    "timonwong.shellcheck",
     "usernamehw.errorlens",
     "vscode.configuration-editing",
     "vscode.dart",
@@ -89,6 +96,7 @@
     "vscode.search-result",
     "vscode.shellscript",
     "vscode.terminal-suggest",
+    "vscode.xml",
     "vscode.yaml",
     "yy0931.gitconfig-lsp",
     "yzane.markdown-pdf",
