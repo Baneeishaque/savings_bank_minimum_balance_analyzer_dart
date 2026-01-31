@@ -14,4 +14,4 @@ dependencies:
   intl: 0.20.2
 
 dev_dependencies:
-  lints: 6.0.0
+  lints: 6.1.0
