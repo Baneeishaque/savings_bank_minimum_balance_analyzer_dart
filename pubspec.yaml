@@ -11,7 +11,7 @@ dependencies:
     git: https://github.com/Baneeishaque/grizzly_io.git
   jiffy: 6.4.3
   tuple: 2.0.2
-  intl: 0.20.2
+  intl: 0.20.3
 
 dev_dependencies:
   lints: 6.0.0
